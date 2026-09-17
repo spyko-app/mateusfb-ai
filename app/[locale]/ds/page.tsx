@@ -46,21 +46,33 @@ export default function DSPage() {
 
         <section className="flex flex-col gap-6">
           <Eyebrow>GLASS PILL</Eyebrow>
-          <div className="flex flex-wrap gap-4 bg-fg p-8">
-            <GlassPill className="px-4 py-2">
-              <a href="#" className="text-button text-bg">
-                Work
-              </a>
-            </GlassPill>
-            <GlassPill className="px-4 py-2">
-              <a href="#" className="text-button text-bg">
-                About
-              </a>
-            </GlassPill>
-            <GlassPill className="px-4 py-2">
-              <a href="#" className="text-button text-bg">
-                Contact
-              </a>
+          <div className="relative flex flex-wrap gap-4 p-8 overflow-hidden">
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 opacity-40"
+              style={{
+                background:
+                  "repeating-linear-gradient(45deg, rgba(255,255,255,.25) 0 12px, transparent 12px 40px)",
+              }}
+            />
+            <GlassPill>
+              <ul className="flex items-center gap-2">
+                <li>
+                  <a href="#" className="block px-[14px] py-[6px] text-button text-fg/60 hover:text-fg">
+                    Work
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="block px-[14px] py-[6px] text-button text-fg/60 hover:text-fg">
+                    About
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="block px-[14px] py-[6px] text-button text-fg/60 hover:text-fg">
+                    Contact
+                  </a>
+                </li>
+              </ul>
             </GlassPill>
           </div>
         </section>
