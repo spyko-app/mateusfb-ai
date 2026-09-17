@@ -49,7 +49,6 @@ export function Footer({ locale, pathname }: { locale: Locale; pathname?: string
         { label: m.nav.projects, href: `${p("/")}#projects` },
         { label: m.nav.writing, href: p("/writing") },
         { label: m.nav.about, href: p("/about") },
-        { label: "DS", href: p("/ds") },
       ],
     },
     {

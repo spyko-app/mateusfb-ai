@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Container, DashedCard, GlassPill, Button, SectionHeader, Eyebrow } from "@/components/ds";
 
 const typeRows = [
@@ -9,6 +10,9 @@ const typeRows = [
   { cls: "text-button", label: "Button" },
   { cls: "text-eyebrow", label: "Eyebrow" },
 ] as const;
+
+/** Página de dev — fora do índice. */
+export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 export default function DSPage() {
   return (

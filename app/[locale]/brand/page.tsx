@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Mark, Wordmark, Lockup, ShufflingMark } from "@/components/brand";
 
 const Row = ({ label, children }: { label: string; children: React.ReactNode }) => (
@@ -6,6 +7,9 @@ const Row = ({ label, children }: { label: string; children: React.ReactNode }) 
     <div className="flex flex-wrap items-center gap-12">{children}</div>
   </section>
 );
+
+/** Página de dev — fora do índice. */
+export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 export default function BrandPage() {
   return (

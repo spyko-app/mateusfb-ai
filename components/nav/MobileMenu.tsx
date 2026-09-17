@@ -6,6 +6,7 @@ import { GlassPill, Button } from "@/components/ds";
 import { LocaleSwitch } from "./LocaleSwitch";
 import type { NavLink } from "./NavLinks";
 import type { Locale } from "@/lib/i18n";
+import { useLenisControls } from "@/components/SmoothScroll";
 
 const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
@@ -28,11 +29,13 @@ export function MobileMenu({
   const panelRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const id = useId();
+  const lenis = useLenisControls();
 
   useEffect(() => {
     if (!open) return;
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    lenis.stop();
     const panel = panelRef.current;
     const trigger = triggerRef.current;
     const first = panel?.querySelector<HTMLElement>(FOCUSABLE);
@@ -59,9 +62,10 @@ export function MobileMenu({
     return () => {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = prev;
+      lenis.start();
       trigger?.focus();
     };
-  }, [open]);
+  }, [open, lenis]);
 
   return (
     <>
@@ -84,7 +88,7 @@ export function MobileMenu({
           role="dialog"
           aria-modal="true"
           aria-label={labels.menu}
-          className="fixed inset-0 z-[60] flex flex-col bg-bg/95 px-6 pb-8 pt-[92px] text-fg"
+          className="fixed inset-0 z-[60] flex flex-col bg-bg px-6 pb-8 pt-[92px] text-fg"
         >
           <button
             type="button"
