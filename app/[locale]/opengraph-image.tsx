@@ -45,6 +45,7 @@ export default async function OpengraphImage({ params }: { params: Promise<{ loc
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
+          {/* Inline mark: duplica Mark.tsx com #fff explícito pois Satori/ImageResponse não suporta currentColor. */}
           <svg width={MARK} height={MARK} viewBox="0 0 32 32" fill="none">
             <circle cx={core.cx} cy={core.cy} r={core.r} fill="#fff" />
             <path d={orbitPath(orbit)} stroke="#fff" strokeWidth={orbit.strokeWidth} strokeLinecap="round" />

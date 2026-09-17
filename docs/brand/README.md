@@ -18,7 +18,7 @@ Ajuste feito: **stroke da órbita 1,5 → 1,75** (a 16 px o 1,5 afinava demais).
 - **Tamanho mínimo:** 16 px.
 - **Cor:** só preto/branco via `currentColor`. Nunca cor, gradiente ou sombra.
 - **Não:** rotacionar a marca (só o satélite anima), contornar o núcleo, mudar o gap, esticar, combinar com o "M".
-- Wordmark: `mateusfb` Geist Sans 500 + `.ai` Geist Mono 400 a 60%.
+- Wordmark: `mateusfb` Geist Sans 500 + `.ai` Geist Mono 400 a 60%. Nota: `.ai` usa `opacity-60` (não `text-fg/60`) pra manter 60% em fundos tanto pretos como invertidos (branco).
 
 ## Arquivos
 - `components/brand/` — `Mark` (inline SVG, `MARK_GEOMETRY`, `orbitPath`, `satellitePoint`), `Wordmark`, `Lockup`, `ShufflingMark` (client, 7 pontos que embaralham no hover/click e voltam em 600 ms).
