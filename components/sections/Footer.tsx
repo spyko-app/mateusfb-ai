@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { DashedCard, Eyebrow } from "@/components/ds";
+import { DashedCard, Eyebrow, ScrambleText } from "@/components/ds";
 import { ShufflingMark } from "@/components/brand";
 import { getMessages, localePath, type Locale } from "@/lib/i18n";
 import { projects, repoUrl, githubProfile, contactEmail } from "@/content/projects";
@@ -17,12 +17,12 @@ function Col({ title, items }: { title: string; items: Item[] }) {
         {items.map((it) => (
           <li key={it.href + it.label}>
             {it.external ? (
-              <a href={it.href} target="_blank" rel="noreferrer" className="text-fg/70 transition-colors duration-200 hover:text-fg">
-                {it.label}
+              <a href={it.href} target="_blank" rel="noreferrer" data-scramble className="text-fg/70 transition-colors duration-200 hover:text-fg">
+                <ScrambleText text={it.label} />
               </a>
             ) : (
-              <Link href={it.href} className="text-fg/70 transition-colors duration-200 hover:text-fg">
-                {it.label}
+              <Link href={it.href} data-scramble className="text-fg/70 transition-colors duration-200 hover:text-fg">
+                <ScrambleText text={it.label} />
               </Link>
             )}
           </li>

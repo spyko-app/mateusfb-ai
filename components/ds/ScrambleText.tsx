@@ -71,16 +71,28 @@ export function ScrambleText({ text, className = "" }: { text: string; className
     };
   }, [text]);
 
+  // Agrupa por palavra (span nowrap) pra quebra de linha só acontecer entre palavras, nunca no meio de uma.
+  const words: { start: number; chars: string[] }[] = [];
+  realChars.forEach((c, i) => {
+    if (c === " " || words.length === 0 || realChars[i - 1] === " ") words.push({ start: i, chars: [] });
+    words[words.length - 1].chars.push(c);
+  });
+
   return (
     <span ref={wrapperRef} aria-label={text} className={className}>
-      {realChars.map((c, i) => {
-        const shown = overrides[i] ?? c;
-        return (
-          <span key={i} aria-hidden="true" className="inline-block" style={{ fontVariantNumeric: "tabular-nums" }}>
-            {shown === " " ? " " : shown}
-          </span>
-        );
-      })}
+      {words.map((w) => (
+        <span key={w.start} aria-hidden="true" className={w.chars[0] === " " ? undefined : "inline-block whitespace-nowrap"}>
+          {w.chars.map((c, j) => {
+            const i = w.start + j;
+            const shown = overrides[i] ?? c;
+            return (
+              <span key={i} className="inline-block" style={{ fontVariantNumeric: "tabular-nums" }}>
+                {shown === " " ? "\u00a0" : shown}
+              </span>
+            );
+          })}
+        </span>
+      ))}
     </span>
   );
 }

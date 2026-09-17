@@ -1,16 +1,49 @@
 ---
-title: "Building with agents: spec first, then let it run"
+title: "Building with agents:\nspec first, then let it run"
 date: "2026-09-15"
-summary: "The workflow that actually works: write the spec, break it into tasks, and let the agent execute."
+summary: "The workflow that actually works: write the spec, split it into tested tasks, run agents in parallel, and gate every merge."
 tags: ["workflow", "agents"]
 ---
-Most of the failure I've seen with coding agents isn't the model — it's skipping straight to code without a spec. The agent fills the gaps with guesses, and guesses compound.
+Most of the failure I have seen with coding agents is not the model. It is skipping straight to code without a spec. The agent fills every gap with a guess, the guesses compound, and by the third file you are reviewing something you never asked for. This site, the desktop apps and the content engines I publish were all built the same way, so here is the loop as it runs today.
 
-## The loop that works
-Write a short spec, break it into ordered tasks with explicit interfaces, and let the agent implement one task at a time with tests first. Review the diff, not the process.
+## Why spec first
+
+A spec is the cheapest place to be wrong. Before any code, I write one short document that says what exists when the work is done: the routes, the components, the copy keys, the tests that must pass, and the things that are out of scope. It is usually one screen of text. The point is not ceremony. The point is that an agent reads that document at the start of every session and starts at the owner's level instead of rediscovering the project from the file tree.
+
+The spec also settles arguments before they happen. If the design says strict black and white, the spec says it, and no agent proposes an accent color at 2 a.m.
+
+## Splitting the plan into tasks with tests
+
+The spec becomes a plan, and the plan becomes numbered tasks. Each task is small enough to finish in one session and carries three things: the files it may touch, the acceptance criteria, and the test that proves them. A task without a test is a task I will have to verify by hand later, so it does not get scheduled.
+
+The check is always the same command, and it is the only definition of done:
 
 ```bash
 npm run check && npm run build
 ```
 
-That single command is the gate. If it's green, the task is done — no vibes required.
+Lint, types, unit tests, then a production build. If that line is green, the task is done. If it is red, the task is not done, no matter how good the diff looks.
+
+## Parallel agents in worktrees
+
+Tasks that do not share files run at the same time. Each agent gets its own git worktree and its own branch, born from the current main, so nobody edits the same file and nobody waits. One agent owns the hero, another owns the copy, a third owns the footer. They all have the same spec, the same commands and the same rule: touch only the files your task names.
+
+When a task finishes, the branch is rebased on main and merged. Merges are serial, one at a time, and small. That single discipline removed almost every conflict I used to have.
+
+## Review gates
+
+Every merge passes through the same gates. The command above must be green, with the output pasted, not promised. A screenshot proves what the browser shows, because a passing test does not mean the page looks right. And a reviewer, human or agent, reads the diff against the task, not the whole repository. If the diff touches a file the task did not name, it goes back.
+
+## What breaks
+
+Three honest lessons from this site.
+
+Hydration and reduced motion. A hook that reads `prefers-reduced-motion` on the first render produces different HTML on the server and the client, and React complains. The fix was to render the static version first and only switch after mount.
+
+Symlinked `node_modules` and Turbopack. Sharing dependencies between worktrees through a symlink looked clever and broke the dev server in ways the error messages never explained. Each worktree now installs its own.
+
+Screenshots without an open page. An agent asked the browser for a screenshot before any page was open and got a blank image, then reported the layout as fine. The rule became: open, wait, then screenshot, and look at the file.
+
+## Closing
+
+None of this is about trusting the model less. It is about giving it the same thing a good teammate would want: a clear spec, a task it can finish, a test that says when it is finished, and a review that reads what it actually did. Do that, and you can let it run.

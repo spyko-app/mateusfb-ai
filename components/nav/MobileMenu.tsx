@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useId, useRef, useState } from "react";
-import { GlassPill, Button } from "@/components/ds";
+import { GlassPill, Button, ScrambleText } from "@/components/ds";
 import { LocaleSwitch } from "./LocaleSwitch";
 import type { NavLink } from "./NavLinks";
 import type { Locale } from "@/lib/i18n";
@@ -76,9 +76,10 @@ export function MobileMenu({
           aria-expanded={open}
           aria-controls={id}
           onClick={() => setOpen((o) => !o)}
+          data-scramble
           className="block px-[14px] py-[6px] text-button text-fg"
         >
-          {open ? labels.close : labels.menu}
+          <ScrambleText text={open ? labels.close : labels.menu} />
         </button>
       </GlassPill>
       {open && (
@@ -93,21 +94,22 @@ export function MobileMenu({
           <button
             type="button"
             onClick={() => setOpen(false)}
+            data-scramble
             className="absolute right-4 top-4 rounded-full border border-fg/20 px-[14px] py-[6px] text-button"
           >
-            {labels.close}
+            <ScrambleText text={labels.close} />
           </button>
           <ul className="flex flex-col gap-6">
             {links.map((l) => (
               <li key={l.href}>
-                <Link href={l.href} onClick={() => setOpen(false)} className="text-subhead">
-                  {l.label}
+                <Link href={l.href} onClick={() => setOpen(false)} data-scramble className="text-subhead">
+                  <ScrambleText text={l.label} />
                 </Link>
               </li>
             ))}
             <li>
-              <a href={github.href} target="_blank" rel="noreferrer" className="text-subhead">
-                {github.label}
+              <a href={github.href} target="_blank" rel="noreferrer" data-scramble className="text-subhead">
+                <ScrambleText text={github.label} />
               </a>
             </li>
           </ul>

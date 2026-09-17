@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { Button, Container, Eyebrow } from "@/components/ds";
 import { defaultLocale, getMessages, isLocale, localePath, type Locale } from "@/lib/i18n";
+import { PageEnd } from "@/components/sections/PageEnd";
 
 /** 404 localizada. not-found não recebe params: lê o locale do pathname (client, sem tornar a rota dinâmica). */
 export default function NotFound() {
@@ -20,6 +21,7 @@ export default function NotFound() {
           {m.notFound.home}
         </Button>
       </Container>
+      <PageEnd locale={locale} />
     </section>
   );
 }

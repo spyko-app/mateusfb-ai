@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Container, DashedCard, GlassPill, Button, SectionHeader, Eyebrow } from "@/components/ds";
+import { PageEnd } from "@/components/sections/PageEnd";
+import { defaultLocale, isLocale } from "@/lib/i18n";
 
 const typeRows = [
   { cls: "text-display", label: "Display" },
@@ -14,14 +16,15 @@ const typeRows = [
 /** Página de dev — fora do índice. */
 export const metadata: Metadata = { robots: { index: false, follow: false } };
 
-export default function DSPage() {
+export default async function DSPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
   return (
     <main className="bg-bg text-fg">
       <Container className="flex flex-col gap-24 py-24">
         <div className="flex flex-col gap-2">
           <Eyebrow>DS · STYLEGUIDE</Eyebrow>
           <h1 className="text-display">Design system</h1>
-          <p className="text-body text-fg/70">Sandbox visual dos primitivos — cores, tipografia, motion, componentes.</p>
+          <p className="text-body text-fg/70">Sandbox visual dos primitivos: cores, tipografia, motion, componentes.</p>
         </div>
 
         <section className="flex flex-col gap-6">
@@ -103,6 +106,7 @@ export default function DSPage() {
           body="Corpo de exemplo do bloco de cabeçalho de seção, com eyebrow numerado e headline."
         />
       </Container>
+      <PageEnd locale={isLocale(locale) ? locale : defaultLocale} />
     </main>
   );
 }

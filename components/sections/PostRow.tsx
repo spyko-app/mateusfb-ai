@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { DashedCard, Reveal } from "@/components/ds";
-import { formatDate, type Post } from "@/lib/posts";
+import { DashedCard, Reveal, ScrambleText } from "@/components/ds";
+import { formatDate, plainTitle, type Post } from "@/lib/posts";
 import { localePath, type Locale, type Messages } from "@/lib/i18n";
 
 export function PostRow({
@@ -24,12 +24,14 @@ export function PostRow({
         </time>
         <div>
           <h3 className="text-pullquote">
-            <Link href={href}>{post.title}</Link>
+            <Link href={href} data-scramble>
+              <ScrambleText text={plainTitle(post.title)} />
+            </Link>
           </h3>
           <p className="mt-2 text-caption text-fg/60">{post.summary}</p>
         </div>
-        <Link className="text-button text-fg" href={href}>
-          {m.writing.read} ↗
+        <Link className="text-button text-fg" href={href} data-scramble>
+          <ScrambleText text={m.writing.read} /> ↗
         </Link>
       </DashedCard>
     </Reveal>

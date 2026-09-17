@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "mateusfb.ai — building tools, agents and content with AI",
+    "title": "mateusfb.ai · building tools, agents and content with AI",
     "description": "Repositories, creations and notes by Mateus FB. Built in public with AI agents."
   },
   "nav": {
@@ -17,7 +17,7 @@
     "version": "v0.1",
     "eyebrow": "Now building · vibe100coding kit",
     "title": "Building tools, agents\nand content with AI.",
-    "sub": "Open repositories, desktop apps and notes — shipped in public, one agent at a time.",
+    "sub": "Open repositories, desktop apps and notes, shipped in public one agent at a time.",
     "primary": "See projects",
     "secondary": "Read writing"
   },
@@ -38,23 +38,23 @@
   "where": {
     "num": "02",
     "eyebrow": "Where I sit",
-    "title": "A person, a stack of agents, and things that ship.",
-    "body": "I sit between the idea and production. Agents do the building; I set direction and approve what goes out.",
+    "title": "One person, agents, things that ship.",
+    "body": "I sit between the idea and production: agents build, I set direction and approve what ships.",
     "cards": [
       {
         "eyebrow": "The idea",
         "title": "Ideas should\nship themselves.",
-        "body": "Most ideas die in the gap between a note and a repository. I set direction, write the spec, and let the build run."
+        "body": "Most ideas die between the note and the repository, so I write the spec and let the build run."
       },
       {
         "eyebrow": "The agents",
         "title": "A layer that\nowns the build.",
-        "body": "Claude Code agents plan, write, test and review. Skills and kits encode how I work so every session starts at the owner's level."
+        "body": "Claude Code agents plan, write, test and review, with skills and kits that encode how I work."
       },
       {
         "eyebrow": "The output",
         "title": "Everyone else prompts.\nI ship.",
-        "body": "Desktop apps, web tools, content engines. Each one public, each one documented, each one built to be reused."
+        "body": "Desktop apps, web tools and content engines, each one public, documented and built to be reused."
       }
     ],
     "layers": {
@@ -64,10 +64,10 @@
       },
       "agents": {
         "title": "Claude Code agents",
-        "body": "Plan, build, test, review — in parallel."
+        "body": "Plan, build, test, review, in parallel."
       },
       "kits": {
-        "title": "Spyko kits & skills",
+        "title": "Kits & skills",
         "body": "Encoded workflows, reusable across projects."
       },
       "ship": {
@@ -89,7 +89,7 @@
   },
   "cta": {
     "title": "Building in public.",
-    "body": "Follow the repositories or say hi — I answer every message.",
+    "body": "Follow the repositories or say hi. I answer every message.",
     "github": "GitHub",
     "email": "Email"
   },
@@ -107,7 +107,7 @@
   },
   "about": {
     "title": "About",
-    "body": "I'm Mateus. I build software and content with AI agents — desktop apps for macOS, web tools, and the kits that make the next build faster. Everything here is open.",
+    "body": "I'm Mateus. I build software and content with AI agents: desktop apps for macOS, web tools, and the kits that make the next build faster. Everything here is open.",
     "stack": "Stack",
     "contact": "Contact",
     "privacyTitle": "Privacy",

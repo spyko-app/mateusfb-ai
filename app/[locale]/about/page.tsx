@@ -4,6 +4,7 @@ import { isLocale, getMessages } from "@/lib/i18n";
 import { Container, DashedCard, Button } from "@/components/ds";
 import { contactEmail, githubProfile } from "@/content/projects";
 import { alternatesFor } from "@/lib/site";
+import { PageEnd } from "@/components/sections/PageEnd";
 
 const STACK = ["Swift/SwiftUI", "TypeScript/Next.js", "Python", "Claude Code", "Vercel", "macOS"];
 
@@ -15,7 +16,7 @@ export async function generateMetadata({
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const m = getMessages(locale);
-  return { title: `${m.about.title} — mateusfb.ai`, description: m.about.body, alternates: alternatesFor(locale, "/about") };
+  return { title: `${m.about.title} · mateusfb.ai`, description: m.about.body, alternates: alternatesFor(locale, "/about") };
 }
 
 export default async function AboutPage({ params }: { params: Promise<{ locale: string }> }) {
@@ -24,6 +25,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
   const m = getMessages(locale);
 
   return (
+    <>
     <Container className="flex flex-col gap-16 py-[80px]">
       <div className="flex flex-col gap-6">
         <h1 className="text-subhead">{m.about.title}</h1>
@@ -57,5 +59,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
         <p className="max-w-[68ch] text-caption text-fg/60">{m.about.privacyBody}</p>
       </section>
     </Container>
+    <PageEnd locale={locale} />
+    </>
   );
 }

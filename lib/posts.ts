@@ -4,6 +4,7 @@ import matter from "gray-matter";
 import { z } from "zod";
 import { locales, type Locale } from "@/lib/i18n";
 
+/** `title` pode ter um `\n` (YAML "..." ) = quebra manual do h1 na página do post. Listas/metadata usam `plainTitle`. */
 const Front = z.object({
   title: z.string().min(1),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
@@ -61,6 +62,11 @@ export function getPost(locale: Locale, slug: string, dir = DEFAULT_DIR): Post |
     null
   );
 }
+
+/** Linhas do título (split no `\n`), pro h1 do post. */
+export const titleLines = (title: string) => title.split("\n").map((l) => l.trim()).filter(Boolean);
+/** Título em uma linha, pra listas, links e <title>. */
+export const plainTitle = (title: string) => titleLines(title).join(" ");
 
 export function formatDate(iso: string, locale: Locale): string {
   const date = new Date(`${iso}T00:00:00Z`);
