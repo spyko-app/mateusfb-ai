@@ -8,7 +8,7 @@ export function Hero({ locale }: { locale: Locale }) {
   return (
     <section
       id="top"
-      className="relative flex min-h-[100svh] flex-col items-center justify-center gap-8 px-6 pt-[120px] pb-16 text-center"
+      className="relative flex min-h-[100svh] flex-col items-center justify-center gap-6 px-6 pt-[96px] pb-16 text-center"
     >
       <Reveal>
         <DashedCard className="inline-flex items-center gap-3 px-3 py-[6px]">
@@ -28,7 +28,7 @@ export function Hero({ locale }: { locale: Locale }) {
           {m.hero.secondary}
         </Button>
       </Reveal>
-      <div className="relative mt-8 h-[500px] w-full max-w-[720px]">
+      <div className="relative mt-8 h-[clamp(300px,38vh,420px)] w-full max-w-[720px]">
         <HeroCanvas />
       </div>
     </section>

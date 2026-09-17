@@ -5,6 +5,7 @@ export function HeroFallback() {
   return (
     <div
       data-hero-fallback
+      aria-hidden
       className="relative flex h-full w-full items-center justify-center [background:radial-gradient(circle,rgba(255,255,255,.08),transparent_60%)]"
     >
       <svg className="pointer-events-none absolute inset-0 h-full w-full opacity-40" aria-hidden>

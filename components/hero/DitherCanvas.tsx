@@ -5,7 +5,7 @@ import * as THREE from "three";
 import { frag, vert } from "./dither.glsl";
 
 const MAX_W = 720;
-const MAX_H = 500;
+const MAX_H = 420;
 const PIXEL = 2;
 const SLAB = { size: 2.2, thick: 0.08, gap: 0.9 } as const;
 const TILT_X = 0.6;
@@ -14,7 +14,9 @@ const PARALLAX = 0.21;
 const LERP = 0.06;
 const BREATH_AMP = 0.08;
 const BREATH_PERIOD = 4000;
-const CAM_Z = 8.5;
+const FOV = 35;
+/** margem de ~8% ao redor da pilha: a caixa ocupa esta fração da altura/largura visível */
+const FIT_MARGIN = 0.92;
 
 /** Pilha isométrica do mark em 3D: topo sólido, dois de baixo em contorno (fill escuro pro dither ler as arestas). */
 function buildStack(): { group: THREE.Group; top: THREE.Mesh; dispose: () => void } {
@@ -64,9 +66,7 @@ export default function DitherCanvas() {
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x000000);
-    const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
-    camera.position.set(0, 1.6, CAM_Z);
-    camera.lookAt(0, -0.35, 0);
+    const camera = new THREE.PerspectiveCamera(FOV, 1, 0.1, 100);
 
     const key = new THREE.DirectionalLight(0xffffff, 2.2);
     key.position.set(-3, 4, 3);
@@ -74,6 +74,16 @@ export default function DitherCanvas() {
 
     const stack = buildStack();
     scene.add(stack.group);
+
+    // bounding box da pilha já rotacionada/posicionada — usado pra enquadrar a câmera com margem
+    const bbox = new THREE.Box3().setFromObject(stack.group);
+    const bboxSize = new THREE.Vector3();
+    bbox.getSize(bboxSize);
+    const bboxCenter = new THREE.Vector3();
+    bbox.getCenter(bboxCenter);
+    // a "respiração" do topo e o parallax variam a caixa um pouco; dá uma folga extra
+    const fitHeight = bboxSize.y + BREATH_AMP * 2;
+    const fitWidth = bboxSize.x;
 
     const target = new THREE.WebGLRenderTarget(1, 1, { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter });
     const quadScene = new THREE.Scene();
@@ -95,10 +105,15 @@ export default function DitherCanvas() {
       target.setSize(w, h);
       ditherMat.uniforms.uRes.value.set(w, h);
       camera.aspect = w / h;
-      // canvas estreito (mobile): afasta a câmera pra pilha não encostar nas bordas
-      camera.position.z = CAM_Z / Math.min(1, Math.max(camera.aspect, 0.55));
-      camera.lookAt(0, -0.35, 0);
       camera.updateProjectionMatrix();
+
+      // distância mínima pra pilha inteira caber na vertical e na horizontal, com margem
+      const vFov = (camera.fov * Math.PI) / 180;
+      const distForHeight = fitHeight / FIT_MARGIN / (2 * Math.tan(vFov / 2));
+      const distForWidth = fitWidth / FIT_MARGIN / (2 * Math.tan(vFov / 2) * camera.aspect);
+      const dist = Math.max(distForHeight, distForWidth);
+      camera.position.set(bboxCenter.x, bboxCenter.y, bboxCenter.z + dist);
+      camera.lookAt(bboxCenter);
     };
     resize();
     const ro = new ResizeObserver(resize);
