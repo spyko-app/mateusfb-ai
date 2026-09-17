@@ -1,4 +1,4 @@
-import { DashedCard, Eyebrow, Reveal } from "@/components/ds";
+import { DashedCard, Eyebrow, Reveal, ScrambleText } from "@/components/ds";
 import { getMessages, type Locale } from "@/lib/i18n";
 import { relativeTime, type RepoStats } from "@/lib/github";
 import { repoUrl, type Project } from "@/content/projects";
@@ -17,7 +17,7 @@ export function ProjectCard({
   const m = getMessages(locale);
   const url = repoUrl(project);
   const building = project.status === "building";
-  const linkProps = url ? { as: "a" as const, href: url, target: "_blank", rel: "noreferrer" } : {};
+  const linkProps = url ? { as: "a" as const, href: url, target: "_blank", rel: "noreferrer", "data-scramble": "" } : {};
   return (
     <Reveal delay={index * 0.08}>
       <DashedCard
@@ -44,7 +44,7 @@ export function ProjectCard({
           </span>
           {url && (
             <span className="whitespace-nowrap text-fg">
-              {m.projects.open}{" "}
+              <ScrambleText text={m.projects.open} />{" "}
               <span className="inline-block transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
                 ↗
               </span>

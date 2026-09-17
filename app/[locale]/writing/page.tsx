@@ -5,6 +5,7 @@ import { getPosts } from "@/lib/posts";
 import { alternatesFor } from "@/lib/site";
 import { Container, SectionHeader } from "@/components/ds";
 import { PostRow } from "@/components/sections/PostRow";
+import { PageEnd } from "@/components/sections/PageEnd";
 
 export async function generateMetadata({
   params,
@@ -14,7 +15,7 @@ export async function generateMetadata({
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const m = getMessages(locale);
-  return { title: `${m.writing.title} — mateusfb.ai`, description: m.writing.body, alternates: alternatesFor(locale, "/writing") };
+  return { title: `${m.writing.title} · mateusfb.ai`, description: m.writing.body, alternates: alternatesFor(locale, "/writing") };
 }
 
 export default async function WritingPage({ params }: { params: Promise<{ locale: string }> }) {
@@ -23,6 +24,7 @@ export default async function WritingPage({ params }: { params: Promise<{ locale
   const m = getMessages(locale);
   const posts = getPosts(locale);
   return (
+    <>
     <Container className="flex flex-col gap-12 py-[80px]">
       <SectionHeader num={m.writing.num} eyebrow={m.writing.eyebrow} title={m.writing.title} body={m.writing.body} />
       <div className="flex flex-col gap-[9px]">
@@ -32,5 +34,7 @@ export default async function WritingPage({ params }: { params: Promise<{ locale
       </div>
       {posts.length === 0 && <p className="text-caption text-fg/60">{m.writing.empty}</p>}
     </Container>
+    <PageEnd locale={locale} />
+    </>
   );
 }
