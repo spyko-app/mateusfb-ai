@@ -1,10 +1,27 @@
 ---
-title: "Hello, world — why this site exists"
+title: "Hello, world: why this site exists"
 date: "2026-09-17"
 summary: "A place for the repositories, the creations and the notes behind them."
 tags: ["meta"]
 ---
-This site is where I put the things I build with AI agents: **repositories**, desktop apps, content engines — and short notes on how they were made.
+This site is where I put the things I build with AI agents. Most of my work already lives in public repositories, but a repository is a poor front door: it shows the code and hides the reasoning. I wanted one place that shows both, in English and in Portuguese, with no tracking and no cost to keep online.
 
-## How it's published
-A post is a file. I write `content/posts/<slug>.en.mdx`, push, and Vercel deploys. No CMS, no cost.
+## Why it exists
+
+I build with Claude Code every day. Desktop apps for macOS, web tools, content engines, and the kits that make the next build faster. Along the way I keep learning small, practical things about how to work with agents: what to write down before the first prompt, how to split work so several agents can run at once, and what breaks when you skip a step. Those lessons were scattered across commit messages and chat logs. Now they have an address.
+
+## What is here
+
+**Projects** lists the repositories I am actively building or have shipped, with live stars and last-push dates pulled from the public GitHub API. Each card links straight to the code.
+
+**Writing** holds short notes from building. They are practical by design: one idea per post, one command you can run, one thing that broke and how it was fixed. The first real one is about specs, tasks and letting agents run.
+
+**About** is the short version of who I am, the stack I use, and how to reach me.
+
+## How posts are published
+
+A post is a file. I write `content/posts/<slug>.en.mdx` and `content/posts/<slug>.pt.mdx`, with a small frontmatter block for the title, date and summary, then push. Vercel builds the site and the post is live a minute later. There is no CMS, no database and no admin panel, which means nothing to maintain and nothing to pay for.
+
+If a post exists in only one language, the site says so and shows the version it has. Everything, including this text, is in the open repository, so if you spot a mistake you can open a pull request.
+
+Welcome. The repositories are the work; these notes are how it gets done.

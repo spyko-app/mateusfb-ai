@@ -1,16 +1,49 @@
 ---
-title: "Construindo com agentes: spec primeiro, depois deixa rodar"
+title: "Construindo com agentes:\nspec primeiro, depois deixa rodar"
 date: "2026-09-15"
-summary: "O fluxo que realmente funciona: escreve a spec, quebra em tarefas, e deixa o agente executar."
+summary: "O fluxo que realmente funciona: escreve a spec, quebra em tarefas com teste, roda agentes em paralelo e coloca um gate em cada merge."
 tags: ["workflow", "agentes"]
 ---
-A maior parte da falha que eu vi com agentes de código não é o modelo — é pular direto pro código sem spec. O agente preenche as lacunas com chute, e chute acumula.
+A maior parte da falha que eu vi com agentes de código não é o modelo. É pular direto pro código sem spec. O agente preenche cada lacuna com um chute, os chutes se acumulam, e no terceiro arquivo você está revisando algo que nunca pediu. Este site, os apps desktop e os motores de conteúdo que eu publico foram todos feitos do mesmo jeito, então aqui vai o loop como ele roda hoje.
 
-## O loop que funciona
-Escreve uma spec curta, quebra em tarefas ordenadas com interfaces explícitas, e deixa o agente implementar uma tarefa por vez com teste primeiro. Revisa o diff, não o processo.
+## Por que spec primeiro
+
+A spec é o lugar mais barato pra errar. Antes de qualquer código, eu escrevo um documento curto que diz o que existe quando o trabalho termina: as rotas, os componentes, as chaves de copy, os testes que precisam passar e o que fica fora do escopo. Normalmente cabe numa tela. O ponto não é cerimônia. O ponto é que o agente lê esse documento no começo de toda sessão e começa no nível do dono, em vez de redescobrir o projeto pela árvore de arquivos.
+
+A spec também resolve discussões antes que elas aconteçam. Se o design é preto e branco estrito, a spec diz isso, e nenhum agente propõe uma cor de destaque às duas da manhã.
+
+## Quebrando o plano em tarefas com teste
+
+A spec vira um plano, e o plano vira tarefas numeradas. Cada tarefa é pequena o bastante pra terminar numa sessão e carrega três coisas: os arquivos que pode tocar, os critérios de aceite e o teste que prova esses critérios. Tarefa sem teste é tarefa que eu vou ter que verificar na mão depois, então ela não entra na fila.
+
+A checagem é sempre o mesmo comando, e ele é a única definição de pronto:
 
 ```bash
 npm run check && npm run build
 ```
 
-Esse comando único é o gate. Se está verde, a tarefa tá pronta — sem achismo.
+Lint, tipos, testes unitários e depois o build de produção. Se essa linha está verde, a tarefa está pronta. Se está vermelha, não está pronta, por melhor que o diff pareça.
+
+## Agentes em paralelo, cada um na sua worktree
+
+Tarefas que não compartilham arquivos rodam ao mesmo tempo. Cada agente ganha a própria worktree do git e a própria branch, nascida da main atual, então ninguém edita o mesmo arquivo e ninguém espera. Um agente é dono do hero, outro é dono da copy, um terceiro é dono do rodapé. Todos têm a mesma spec, os mesmos comandos e a mesma regra: só toca nos arquivos que a tarefa nomeia.
+
+Quando uma tarefa termina, a branch faz rebase na main e entra. Os merges são em série, um por vez, e pequenos. Só essa disciplina eliminou quase todo conflito que eu tinha antes.
+
+## Gates de revisão
+
+Todo merge passa pelos mesmos gates. O comando acima precisa estar verde, com a saída colada, não prometida. Um screenshot prova o que o navegador mostra, porque teste passando não significa que a página está certa. E um revisor, humano ou agente, lê o diff contra a tarefa, não contra o repositório inteiro. Se o diff toca um arquivo que a tarefa não nomeou, volta.
+
+## O que quebra
+
+Três lições honestas deste site.
+
+Hidratação e reduced motion. Um hook que lê `prefers-reduced-motion` no primeiro render produz HTML diferente no servidor e no cliente, e o React reclama. A correção foi renderizar a versão estática primeiro e só trocar depois do mount.
+
+`node_modules` por symlink e Turbopack. Compartilhar dependências entre worktrees por symlink parecia esperto e quebrou o servidor de dev de um jeito que as mensagens de erro nunca explicaram. Agora cada worktree instala o seu.
+
+Screenshot sem página aberta. Um agente pediu um screenshot pro navegador antes de abrir qualquer página, recebeu uma imagem em branco e reportou o layout como ok. A regra virou: abre, espera, depois tira o screenshot, e olha o arquivo.
+
+## Fechando
+
+Nada disso é sobre confiar menos no modelo. É sobre dar a ele o que um bom colega de time também ia querer: uma spec clara, uma tarefa que dá pra terminar, um teste que diz quando terminou e uma revisão que lê o que ele de fato fez. Faz isso, e dá pra deixar rodar.

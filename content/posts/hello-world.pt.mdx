@@ -1,10 +1,27 @@
 ---
-title: "Olá, mundo — por que este site existe"
+title: "Olá, mundo: por que este site existe"
 date: "2026-09-17"
 summary: "Um lugar pros repositórios, as criações e as notas por trás delas."
 tags: ["meta"]
 ---
-Este site é onde eu coloco as coisas que construo com agentes de IA: **repositórios**, apps desktop, motores de conteúdo — e notas curtas sobre como foram feitas.
+Este site é onde eu coloco as coisas que construo com agentes de IA. A maior parte do meu trabalho já vive em repositórios públicos, mas repositório é uma porta de entrada ruim: mostra o código e esconde o raciocínio. Eu queria um lugar só que mostrasse os dois, em português e em inglês, sem rastreador e sem custo pra manter no ar.
 
-## Como é publicado
-Um post é um arquivo. Eu escrevo `content/posts/<slug>.pt.mdx`, dou push, e a Vercel faz o deploy. Sem CMS, sem custo.
+## Por que ele existe
+
+Eu construo com Claude Code todo dia. Apps desktop pra macOS, ferramentas web, motores de conteúdo e os kits que deixam o próximo build mais rápido. No caminho, vou aprendendo coisas pequenas e práticas sobre trabalhar com agentes: o que escrever antes do primeiro prompt, como dividir o trabalho pra vários agentes rodarem ao mesmo tempo e o que quebra quando você pula uma etapa. Essas lições estavam espalhadas em mensagens de commit e logs de chat. Agora elas têm endereço.
+
+## O que tem aqui
+
+**Projetos** lista os repositórios que estou construindo ou já entreguei, com estrelas e data do último push puxadas ao vivo da API pública do GitHub. Cada card leva direto pro código.
+
+**Textos** guarda notas curtas de quem constrói. São práticas de propósito: uma ideia por post, um comando que você pode rodar, uma coisa que quebrou e como foi resolvida. A primeira de verdade é sobre spec, tarefas e deixar os agentes rodarem.
+
+**Sobre** é a versão curta de quem eu sou, a stack que uso e como falar comigo.
+
+## Como os posts são publicados
+
+Um post é um arquivo. Eu escrevo `content/posts/<slug>.pt.mdx` e `content/posts/<slug>.en.mdx`, com um bloco pequeno de frontmatter pra título, data e resumo, e dou push. A Vercel faz o build e o post está no ar um minuto depois. Não tem CMS, não tem banco, não tem painel de admin, o que significa nada pra manter e nada pra pagar.
+
+Se um post existe só em um idioma, o site avisa e mostra a versão que tem. Tudo, inclusive este texto, está no repositório aberto, então se você achar um erro pode abrir um pull request.
+
+Bem-vindo. Os repositórios são o trabalho; estas notas são como ele acontece.

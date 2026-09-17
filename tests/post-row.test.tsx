@@ -7,7 +7,7 @@ import type { Post } from "@/lib/posts";
 const post: Post = {
   slug: "a",
   locale: "en",
-  title: "T",
+  title: "T:\nU",
   date: "2026-09-17",
   summary: "S",
   tags: [],
@@ -21,6 +21,7 @@ describe("PostRow", () => {
     const readLink = screen.getByRole("link", { name: /Read/ });
     expect(readLink.getAttribute("href")).toBe("/en/writing/a");
     expect(screen.getByText(/2026/).tagName.toLowerCase()).toBe("time");
-    expect(screen.getByRole("heading", { name: "T" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "T: U" })).toBeTruthy();
+    expect(readLink).toHaveAttribute("data-scramble");
   });
 });
