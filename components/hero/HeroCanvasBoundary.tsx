@@ -5,7 +5,7 @@ import { HeroFallback } from "./HeroFallback";
 
 type BoundaryState = { failed: boolean };
 
-/** Se o WebGL/three quebrar, mostra o fallback estático em vez de derrubar a página. Fica fora do DitherCanvas pra não puxar three.js no chunk eager. */
+/** Se o WebGL/three quebrar, mostra o fallback estático em vez de derrubar a página. Fica fora do ParticleHero pra não puxar three.js no chunk eager. */
 export class HeroCanvasBoundary extends Component<{ children: ReactNode }, BoundaryState> {
   state: BoundaryState = { failed: false };
   static getDerivedStateFromError(): BoundaryState {
