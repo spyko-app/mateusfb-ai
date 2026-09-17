@@ -30,12 +30,12 @@ export function ProjectCard({
           <h3 className="text-pullquote mt-6">{project.name}</h3>
           <p className="text-caption text-fg/60 mt-3">{project.description[locale]}</p>
         </div>
-        <div className="mt-6 flex items-center justify-between text-eyebrow text-fg/60">
-          <span>
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-eyebrow text-fg/60">
+          <span className="whitespace-nowrap">
             ★ {stats.stars} · {m.projects.updated} {relativeTime(stats.pushedAt, locale)}
           </span>
           {url && (
-            <a href={url} target="_blank" rel="noreferrer" className="text-fg hover:underline">
+            <a href={url} target="_blank" rel="noreferrer" className="whitespace-nowrap text-fg hover:underline">
               {m.projects.open} ↗
             </a>
           )}

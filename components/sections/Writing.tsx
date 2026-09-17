@@ -16,9 +16,11 @@ export function Writing({ locale, limit = 3 }: { locale: Locale; limit?: number 
           ))}
         </div>
         {posts.length === 0 && <p className="text-caption text-fg/60">{m.writing.empty}</p>}
-        <Button variant="outline" href={localePath(locale, "/writing")}>
-          {m.writing.all}
-        </Button>
+        <div>
+          <Button variant="outline" href={localePath(locale, "/writing")}>
+            {m.writing.all}
+          </Button>
+        </div>
       </Container>
     </section>
   );
