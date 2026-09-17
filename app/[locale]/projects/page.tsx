@@ -1,44 +1,36 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { isLocale, getMessages } from "@/lib/i18n";
+import { alternatesFor } from "@/lib/site";
 import { Container, SectionHeader } from "@/components/ds";
-import { projects, type ProjectStatus } from "@/content/projects";
+import { projects } from "@/content/projects";
 import { getRepoStats } from "@/lib/github";
-import { ProjectCard } from "@/components/sections/ProjectCard";
 import { ProjectsFilter } from "@/components/sections/ProjectsFilter";
+import { ProjectsGrid, ProjectsGridStatic } from "@/components/sections/ProjectsGrid";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const m = getMessages(locale);
-  return { title: `${m.nav.projects} — mateusfb.ai` };
+  return { title: `${m.nav.projects} — mateusfb.ai`, alternates: alternatesFor(locale, "/projects") };
 }
 
-export default async function ProjectsPage({
-  params,
-  searchParams,
-}: {
-  params: Promise<{ locale: string }>;
-  searchParams: Promise<{ status?: string }>;
-}) {
+/** Estática: rende os 4 cards; o filtro `?status=` é aplicado no cliente (useSearchParams, em Suspense). */
+export default async function ProjectsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  const { status } = await searchParams;
   const m = getMessages(locale);
-
-  const filter = status === "shipped" || status === "building" ? (status as ProjectStatus) : undefined;
-  const list = filter ? projects.filter((p) => p.status === filter) : projects;
-  const stats = await Promise.all(list.map((p) => getRepoStats(p)));
+  const stats = await Promise.all(projects.map((p) => getRepoStats(p)));
+  const items = projects.map((project, i) => ({ project, stats: stats[i] }));
 
   return (
     <Container className="py-[80px] flex flex-col gap-12">
       <SectionHeader num={m.projects.num} eyebrow={m.projects.eyebrow} title={m.projects.title} body={m.projects.body} />
-      <ProjectsFilter messages={m} />
-      <div className="grid grid-cols-1 gap-[9px] md:grid-cols-2 xl:grid-cols-4">
-        {list.map((p, i) => (
-          <ProjectCard key={p.slug} project={p} stats={stats[i]} locale={locale} index={i} />
-        ))}
-      </div>
+      <Suspense fallback={<ProjectsGridStatic items={items} locale={locale} />}>
+        <ProjectsFilter messages={m} />
+        <ProjectsGrid items={items} locale={locale} />
+      </Suspense>
     </Container>
   );
 }
