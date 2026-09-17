@@ -13,7 +13,9 @@ const variants: Record<Variant, string> = {
   outline: "border border-fg/20 text-fg hover:border-fg/60",
 };
 
-const isExternal = (href: string) => /^https?:\/\//.test(href) || href.startsWith("mailto:") || href.startsWith("tel:");
+const isHttp = (href: string) => /^https?:\/\//.test(href);
+/** Sai do <Link> do Next: http(s) externo, mailto:, tel:. Só http(s) abre em nova aba. */
+const isExternal = (href: string) => isHttp(href) || href.startsWith("mailto:") || href.startsWith("tel:");
 
 export function Button({
   variant = "solid",
@@ -64,8 +66,7 @@ export function Button({
         <a
           ref={ref as React.Ref<HTMLAnchorElement>}
           href={href}
-          target="_blank"
-          rel="noreferrer"
+          {...(isHttp(href) ? { target: "_blank", rel: "noreferrer" } : {})}
           className={classes}
           onClick={onClick}
           {...magneticProps}
