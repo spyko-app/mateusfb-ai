@@ -1,79 +1,81 @@
 /**
- * Estado da pilha 3D da seção "Where I sit" em função do progresso de scroll (0..1).
+ * Estado da pilha da seção "Where I sit" em função do progresso de scroll.
  * Função pura: sem DOM, sem motion — testada em tests/stack-state.test.ts.
  *
- * Fases (p):
- *   0.00–0.15  plano: só "You" e "Shipped", com um vão vazio entre eles
- *   0.15–0.45  inclina pra isométrico (rotateX 55°, rotateZ −38°); camadas do meio entram pela esquerda
- *              com extrusão tracejada e profundidade escalonada ("You" no topo da pilha = maior z;
- *              cada camada abaixo desce DEPTH_STEP; as linhas tracejadas pendem até a camada de baixo)
- *   0.50–0.85  volta a 2D; integrações aparecem entre kits e Shipped
- *   0.85–1.00  pequeno assentamento
+ * Linha do tempo (p; 0..1 = seção sticky, 1..1.15 = saída da seção — a coluna sticky já está indo embora):
+ *   0.00        plano: "You" + "Shipped" colados (vão 0)
+ *   0.02–0.14   inclina (skewY −9.6° + escala .935) e abre um vão de OPEN_GAP px entre eles; extrusões aparecem
+ *   0.25–0.47   agents (antes) e kits/glyph (depois, +.05) deslizam da esquerda pro vão; o vão cresce até a altura natural
+ *   0.55–0.70   abre a faixa das integrações entre kits e "Shipped"
+ *   0.68–1.00   as 9 células entram em cascata (esquerda → direita, ~.03 de defasagem)
+ *   1.00–1.15   volta ao plano (extrusões somem) — acontece enquanto a seção sai da tela
+ * Calibrado nos PNGs docs/ref/am-p*.png (antimetal.com a 1280×577).
  */
-export const clamp01 = (n: number) => Math.min(1, Math.max(0, n));
+export const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n));
+export const clamp01 = (n: number) => clamp(n, 0, 1);
 export const easeOutQuint = (t: number) => 1 - Math.pow(1 - t, 5);
-export const seg = (p: number, a: number, b: number) =>
-  easeOutQuint(clamp01((p - a) / (b - a)));
+export const seg = (p: number, a: number, b: number) => easeOutQuint(clamp01((p - a) / (b - a)));
 
 export interface LayerState {
   x: number; // %
   y: number; // px
-  z: number; // px
+  z: number; // px (não usado na projeção 2D; mantido pela forma)
   opacity: number;
-  extrude: number; // 0..1
+  extrude: number; // 0..1 — opacidade das linhas de extrusão
 }
 export interface StackState {
-  rotateX: number;
+  rotateX: number; // mantido pela forma (sempre 0: a projeção da referência é um skew 2D)
   rotateZ: number;
-  tilt: number; // 0..1 (quanto da inclinação isométrica está aplicada)
-  scale: number; // encolhe levemente quando inclinado pra caber na viewport
+  skewY: number; // graus
+  tilt: number; // 0..1
+  scale: number;
   you: LayerState;
   agents: LayerState;
   kits: LayerState;
   glyph: LayerState;
-  integrations: LayerState;
+  integrations: LayerState; // opacity = quanto a faixa está aberta
   ship: LayerState;
-  gap: number; // px entre you e ship quando plano
+  cells: number[]; // opacidade das 9 células (8 logos + "+ more")
+  gap: number; // px do vão vazio entre "You" e "Shipped" antes das camadas do meio entrarem
+  enter: number; // 0..1 — quanto o miolo já ocupa a altura natural
 }
 
-export const TILT = { rotateX: 55, rotateZ: -38 } as const;
-export const DEPTH_STEP = 80; // px por camada quando inclinado
-export const TILT_SCALE = 0.82; // escala no pico da inclinação
-export const FLAT_GAP = 160; // px de vão inicial
+export const P_MAX = 1.15;
+export const TILT = { skewY: -9.6, scale: 0.935 } as const;
+export const OPEN_GAP = 125; // px de vão aberto na inclinação (ref. am-p0.12)
+export const EXTRUDE_LEN = 60; // px das linhas de extrusão (antes do skew)
+export const CELLS = 9;
 
 const nz = (n: number) => (n === 0 ? 0 : n); // normaliza -0
 const L = (o: Partial<LayerState> = {}): LayerState => {
   const s = { x: 0, y: 0, z: 0, opacity: 1, extrude: 0, ...o };
-  return {
-    x: nz(s.x),
-    y: nz(s.y),
-    z: nz(s.z),
-    opacity: nz(s.opacity),
-    extrude: nz(s.extrude),
-  };
+  return { x: nz(s.x), y: nz(s.y), z: nz(s.z), opacity: nz(s.opacity), extrude: nz(s.extrude) };
 };
 
 export function stackState(pRaw: number): StackState {
-  const p = clamp01(pRaw);
-  const tilt = seg(p, 0.15, 0.45) * (1 - seg(p, 0.5, 0.85)); // 0 → 1 → 0
-  const enter = seg(p, 0.15, 0.45); // camadas do meio deslizam pra dentro
-  const flat2 = seg(p, 0.55, 0.85); // integrações aparecem
-  const exit = seg(p, 0.85, 1) * 24; // assentamento final
-  // níveis (de cima pra baixo): you=3, agents=2, kits/glyph=1, ship=0
-  const level = (n: number) => DEPTH_STEP * n * tilt;
-  const mid = (n: number): LayerState =>
-    L({ x: -40 * (1 - enter), opacity: enter, z: level(n), extrude: tilt });
+  const p = clamp(pRaw, 0, P_MAX);
+  const tiltIn = seg(p, 0.02, 0.14);
+  const tiltOut = seg(p, 1.0, P_MAX);
+  const tilt = tiltIn * (1 - tiltOut);
+  const enterA = seg(p, 0.25, 0.42);
+  const enterK = seg(p, 0.3, 0.47);
+  const intOpen = seg(p, 0.55, 0.7);
+  const cells = Array.from({ length: CELLS }, (_, i) => nz(seg(p, 0.68 + i * 0.03, 0.76 + i * 0.03)));
+  const mid = (e: number): LayerState => L({ x: -40 * (1 - e), opacity: e, extrude: tilt * e });
   return {
-    rotateX: nz(TILT.rotateX * tilt),
-    rotateZ: nz(TILT.rotateZ * tilt),
+    rotateX: 0,
+    rotateZ: 0,
+    skewY: nz(TILT.skewY * tilt),
     tilt,
-    scale: 1 - (1 - TILT_SCALE) * tilt,
-    you: L({ z: level(3), extrude: tilt, y: -exit }),
-    agents: mid(2),
-    kits: mid(1),
-    glyph: mid(1),
-    integrations: L({ opacity: flat2 }),
-    ship: L({ z: 0, extrude: 0, y: exit }),
-    gap: FLAT_GAP * (1 - enter),
+    scale: 1 - (1 - TILT.scale) * tilt,
+    you: L({ extrude: tilt }),
+    agents: mid(enterA),
+    kits: mid(enterK),
+    glyph: mid(enterK),
+    integrations: L({ opacity: intOpen, extrude: tilt * intOpen }),
+    ship: L({ extrude: tilt }),
+    cells,
+    gap: OPEN_GAP * tiltIn,
+    enter: enterA,
   };
 }

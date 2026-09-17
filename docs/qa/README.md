@@ -32,3 +32,7 @@ Screenshots das tasks anteriores (hero, ds, brand, og, where-reduced-motion, whe
 - `curl -s localhost:3111/en | wc -c` → ~153 KB (< 250 KB).
 - three.js só aparece num chunk lazy (`grep -l three .next/static/chunks/*.js` → 1 arquivo, que **não** está na lista de scripts do HTML de `/en`).
 - Links dos 4 repositórios respondem 200. `LICENSE` (MIT) foi adicionado ao repo para o link do rodapé resolver quando o repositório for publicado.
+
+## Seção 02 × antimetal.com (`docs/qa/where2/`)
+
+Gerado por `scripts/qa-where2.sh <baseUrl> <outDir> [sessao] [w h]`: captura `/en` nos mesmos `p` da referência `docs/ref/am-p<p>.png` (antimetal.com a 1280×577; `p = (scrollY − topo da grade) / (altura da grade − vh)`), em `p = 0 · .12 · .25 · .4 · .55 · .7 · .85 · 1 · 1.15`. `1440/` = mesma rodada a 1440×900. `console-errors.txt` deve estar vazio.

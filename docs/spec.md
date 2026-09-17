@@ -85,14 +85,16 @@ mateusfb-ai/
 ### 02 · Where I sit (Antimetal, integral)
 Cabeçalho: `02 · WHERE I SIT` · h2 "A person, a stack of agents, and things that ship." · p.
 Grid `lg:grid-cols-2`, `pl` alinhado ao container.
-- **Esquerda `StickyCards`:** 3 wrappers `h-screen` cada com filho `sticky top-[8rem]` `DashedCard` (`p-8`, eyebrow, h3 pullquote `whitespace-pre-line`, p caption fg/60 max 480px). O card **ativo** (`data-active`) = aquele cujo wrapper cruza o centro da viewport → inverte (fg/bg). Textos: *THE IDEA* "Ideas should\nship themselves." · *THE AGENTS* "A layer that\nowns the build." · *THE OUTPUT* "Everyone else prompts.\nI ship."
-- **Direita `StackDiagram3D`** (`sticky top-0 h-screen`, `hidden lg:flex`): cena em **CSS 3D** (`perspective 1600px`, `transform-style preserve-3d`), progresso `p ∈ [0,1]` via `useScroll` do wrapper (altura = 3 × 100vh). Três estados interpolados (`useTransform` com clamps):
-  - `p 0–0.15`: **2D plano** — só `You` (topo) e `Shipped` (base), gap vazio entre elas.
-  - `p 0.15–0.5`: rotaciona para isométrico `rotateX(55deg) rotateZ(-38deg)`, camadas do meio (`Claude Code agents`, `Spyko kits` + bloco quadrado com o mark) **deslizam de fora (x −40%) para o slot**, cada camada ganha "extrusão" = 4 linhas tracejadas `fg/25` descendo dos cantos (`translateZ`), profundidade escalonada `translateZ(i*90px)`.
-  - `p 0.5–0.85`: volta a `rotate 0`, extrusões somem, aparece a fileira `integrations` (8 células quadradas tracejadas, logos grayscale: GitHub, Vercel, Next.js, Swift, Python, TypeScript, Claude, macOS + célula "+ more") entre `kits` e `Shipped`.
-  - `p 0.85–1`: estável; leve `translateY` de saída.
-  - Cada camada é `DashedCard` com h3 Geist 25px w400 ls −0.021em e body 14 fg/58, `min-h clamp(72px,9.5cqw,104px)`, `container-type: inline-size`.
-  - Easing por trecho: out-quint; `will-change: transform`.
+- **Esquerda `StickyCards`:** wrappers 1–2 `h-screen`, wrapper 3 `min-h-[55vh]` (como na referência: o 3º card fica ativo em p=1 sem chegar a grudar), cada um com filho `sticky top-[8rem]` `DashedCard` (`p-8`, eyebrow, h3 pullquote `whitespace-pre-line`, p caption fg/60 max 480px). O card **ativo** (`data-active`) = aquele cujo wrapper cruza o centro da viewport → inverte (fg/bg). Mapeamento (igual ao antimetal.com): p 0–.25 → card 1 · p .4–.85 → card 2 · p 1 → card 3. Textos: *THE IDEA* "Ideas should\nship themselves." · *THE AGENTS* "A layer that\nowns the build." · *THE OUTPUT* "Everyone else prompts.\nI ship."
+- **Direita `StackDiagram3D`** (`sticky top-0 h-screen`, `hidden lg:flex`, pilha `max-w-[442px]` encostada à direita da coluna): calibrada frame a frame nos PNGs `docs/ref/am-p*.png` (antimetal.com a 1280×577). A projeção da referência é um **skew 2D** (lados verticais, arestas horizontais sobem 9.6° pra direita) — `skewY(−9.6deg) scale(.935)`, origem no centro — não uma rotação 3D. Estado puro em `lib/stack-state.ts` (`stackState(p)`, testado), `p ∈ [0, 1.15]`: `[0,1]` = seção sticky (`useScroll` da grade, `start start → end end`) e `[1, 1.15]` = saída da seção (`end end → end 0.4`, 60vh de scroll, sem espaçador).
+  - `p 0`: **plano** — `You` e `Shipped` colados (gap 10px).
+  - `p .02–.14`: inclina e abre um vão de 125px entre eles; **extrusões** aparecem (3 linhas finas por card, saindo dos cantos sup-dir, inf-dir e inf-esq a 45° na tela, 60px, esvanecendo — `Extrusions.tsx`; o ângulo −40.5° é pré-compensado pro skew).
+  - `p .25–.47`: `Claude Code agents` (antes) e `Spyko kits` + bloco quadrado tracejado com o mark (depois, +.05) **deslizam da esquerda (x −40%, opacity 0→1)** pro vão; o vão cresce até a altura natural.
+  - `p .55–.70`: abre a faixa das integrações entre `kits` e `Shipped`.
+  - `p .68–1`: as 9 células (8 logos grayscale: GitHub, Vercel, Next.js, Swift, Python, TypeScript, Claude, macOS + "+ more") entram em **cascata** esquerda → direita (`seg(p, .68+i·.03, .76+i·.03)`), cada uma com extrusão curta.
+  - `p 1–1.15`: volta ao plano (skew/scale → 0/1, extrusões somem) enquanto a coluna sticky sai da tela.
+  - Cada camada é `DashedCard` 442×72 (`min-h-[72px]`, padding 18/16), h3 Geist 16px w500 ls −0.02em, body 9px fg/60; miolo `grid-cols-[1fr_154px]`, gaps 10px; integrações `grid-cols-9 gap-[8px]`.
+  - Easing por trecho: out-quint. QA: `scripts/qa-where2.sh` → `docs/qa/where2/p<p>.png` lado a lado com `docs/ref/am-p<p>.png`.
 - **`StackDiagramFlat`** (`lg:hidden`, `min-h-[min(720px,100svh)]`): a versão final 2D estática (mesma CSS do fallback Antimetal, com container queries 760/560/500px).
 
 ### 03 · Writing
