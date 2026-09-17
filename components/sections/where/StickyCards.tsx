@@ -7,7 +7,8 @@ import type { Messages } from "@/lib/i18n";
 
 type Card = Messages["where"]["cards"][number];
 
-/** Coluna esquerda: 3 wrappers h-screen, cada um com um cartão sticky; ativo = wrapper cruzando o meio da viewport. */
+/** Coluna esquerda: wrappers h-screen (o último tem 55vh, como na referência — o 3º cartão fica ativo em p=1
+ *  sem chegar a grudar), cada um com um cartão sticky; ativo = wrapper cruzando o meio da viewport. */
 export function StickyCards({ cards, onActive }: { cards: readonly Card[]; onActive?: (i: number) => void }) {
   const refs = useRef<(HTMLDivElement | null)[]>([]);
   const [active, setActive] = useState(0);
@@ -37,11 +38,11 @@ export function StickyCards({ cards, onActive }: { cards: readonly Card[]; onAct
   }, []);
 
   return (
-    <div className="flex flex-col gap-[4rem] pb-[4rem]" data-sticky-cards>
+    <div className="flex flex-col gap-[4rem]" data-sticky-cards>
       {cards.map((c, i) => (
         <div
           key={c.eyebrow}
-          className="h-screen"
+          className={i < cards.length - 1 ? "h-screen" : "min-h-[55vh]"}
           ref={(el) => {
             refs.current[i] = el;
           }}
