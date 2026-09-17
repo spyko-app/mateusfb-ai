@@ -22,8 +22,8 @@ export const projects: Project[] = [
     language: "TypeScript",
     status: "shipped",
     description: {
-      en: "Elementor engine — converts a design or site into a native, editable Elementor page, with measured fidelity.",
-      pt: "Motor Elementor — converte design/site em página Elementor nativa e editável, com fidelidade verificada por medição.",
+      en: "Elementor engine: converts a design or site into a native, editable Elementor page, with measured fidelity.",
+      pt: "Motor Elementor: converte design/site em página Elementor nativa e editável, com fidelidade verificada por medição.",
     },
     fallback: { stars: 0, pushedAt: "2026-09-17T00:00:00Z" },
   },
@@ -48,8 +48,8 @@ export const projects: Project[] = [
     language: "Swift",
     status: "shipped",
     description: {
-      en: "Dynamic Island for the Mac notch — now playing, system HUDs, shelf, clipboard, droplets. 100% Swift/SwiftUI.",
-      pt: "Dynamic Island pro notch do Mac — now playing, HUDs do sistema, shelf, clipboard, droplets. 100% Swift/SwiftUI.",
+      en: "Dynamic Island for the Mac notch: now playing, system HUDs, shelf, clipboard, droplets. 100% Swift/SwiftUI.",
+      pt: "Dynamic Island pro notch do Mac: now playing, HUDs do sistema, shelf, clipboard, droplets. 100% Swift/SwiftUI.",
     },
     fallback: { stars: 0, pushedAt: "2026-09-17T00:00:00Z" },
   },
