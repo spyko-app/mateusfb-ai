@@ -28,7 +28,7 @@ export function Hero({ locale }: { locale: Locale }) {
           {m.hero.secondary}
         </Button>
       </Reveal>
-      <div className="relative mt-8 h-[clamp(300px,38vh,420px)] w-full max-w-[720px]">
+      <div className="relative mt-8 aspect-[720/500] w-full max-w-[720px]">
         <HeroCanvas />
       </div>
     </section>
