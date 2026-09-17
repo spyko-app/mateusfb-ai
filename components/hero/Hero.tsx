@@ -8,7 +8,7 @@ export function Hero({ locale }: { locale: Locale }) {
   return (
     <section
       id="top"
-      className="relative flex min-h-[100svh] flex-col items-center justify-center gap-6 px-6 pt-[96px] pb-16 text-center"
+      className="relative flex min-h-[100svh] flex-col items-center justify-center gap-5 px-6 pt-[80px] pb-10 text-center"
     >
       <Reveal>
         <DashedCard className="inline-flex items-center gap-3 px-3 py-[6px]">
@@ -28,7 +28,8 @@ export function Hero({ locale }: { locale: Locale }) {
           {m.hero.secondary}
         </Button>
       </Reveal>
-      <div className="relative mt-8 aspect-[720/500] w-full max-w-[720px]">
+      {/* caixa do canvas: altura ≤ clamp(280px, 40vh, 420px) mantendo 720:500 (a largura deriva da altura) → cabe na dobra */}
+      <div className="relative mt-4 aspect-[720/500] w-full [max-width:min(720px,calc(clamp(280px,40vh,420px)*1.44))]">
         <HeroCanvas />
       </div>
     </section>

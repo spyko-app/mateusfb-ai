@@ -22,6 +22,10 @@ void main(){
   vec2 uv = (px * uPixel + uPixel * 0.5) / uRes;
   float l = dot(texture2D(tScene, uv).rgb, vec3(.299, .587, .114));
   l = pow(clamp(l, 0., 1.), uGamma);
+  // vinheta: a luminância morre rumo às bordas (os ~12% externos ficam preto puro) —
+  // a cena dissolve no preto da página, sem retângulo visível (como o xmcp.dev)
+  vec2 vc = (uv - 0.5) * vec2(2.0, 1.7);
+  l *= 1.0 - smoothstep(0.5, 0.76, length(vc));
   // ~55% dos pixels usam ruído fixo (grão estável), o resto re-sorteia a cada frame (cintilação) —
   // diff frame-a-frame ~10/255 com cobertura ~5%, como no xmcp.dev
   float stable = step(hash(px, 7.), 0.55);
@@ -51,6 +55,9 @@ void main(){
   float breath = 0.92 + 0.08 * sin(uTime * 0.6);
   float x = streak(p, normalize(vec2(1., 0.78)), 0.09) + streak(p, normalize(vec2(1., -0.78)), 0.09);
   float v = glow + halo + 0.10 * x * breath;
+  // fundo também some antes da borda (evita o halo encostar no limite do canvas)
+  vec2 vc = (vUv - 0.5) * vec2(2.0, 1.7);
+  v *= 1.0 - smoothstep(0.45, 0.8, length(vc));
   gl_FragColor = vec4(vec3(v), 1.);
 }
 `;

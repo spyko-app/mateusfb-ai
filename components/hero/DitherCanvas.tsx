@@ -21,7 +21,7 @@ const LERP = 0.05;
 const BREATH_AMP = 0.08;
 const BREATH_PERIOD = 4000;
 const FOV = 35;
-const FIT_MARGIN = 0.8;
+const FIT_MARGIN = 0.7;
 
 /** Pilha isométrica do mark em 3D, iluminada suave: topo emissivo, os de baixo em cinza que pega luz e névoa. */
 function buildStack(): { group: THREE.Group; top: THREE.Mesh; dispose: () => void } {
