@@ -1,0 +1,16 @@
+---
+title: "Construindo com agentes: spec primeiro, depois deixa rodar"
+date: "2026-09-15"
+summary: "O fluxo que realmente funciona: escreve a spec, quebra em tarefas, e deixa o agente executar."
+tags: ["workflow", "agentes"]
+---
+A maior parte da falha que eu vi com agentes de código não é o modelo — é pular direto pro código sem spec. O agente preenche as lacunas com chute, e chute acumula.
+
+## O loop que funciona
+Escreve uma spec curta, quebra em tarefas ordenadas com interfaces explícitas, e deixa o agente implementar uma tarefa por vez com teste primeiro. Revisa o diff, não o processo.
+
+```bash
+npm run check && npm run build
+```
+
+Esse comando único é o gate. Se está verde, a tarefa tá pronta — sem achismo.

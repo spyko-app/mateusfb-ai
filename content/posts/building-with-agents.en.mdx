@@ -1,0 +1,16 @@
+---
+title: "Building with agents: spec first, then let it run"
+date: "2026-09-15"
+summary: "The workflow that actually works: write the spec, break it into tasks, and let the agent execute."
+tags: ["workflow", "agents"]
+---
+Most of the failure I've seen with coding agents isn't the model — it's skipping straight to code without a spec. The agent fills the gaps with guesses, and guesses compound.
+
+## The loop that works
+Write a short spec, break it into ordered tasks with explicit interfaces, and let the agent implement one task at a time with tests first. Review the diff, not the process.
+
+```bash
+npm run check && npm run build
+```
+
+That single command is the gate. If it's green, the task is done — no vibes required.
