@@ -1,21 +1,125 @@
 {
-  "meta": { "title": "mateusfb.ai — construindo ferramentas, agentes e conteúdo com IA", "description": "Repositórios, criações e notas do Mateus FB. Construído em público com agentes de IA." },
-  "nav": { "projects": "Projetos", "writing": "Textos", "about": "Sobre", "github": "GitHub", "talk": "Vamos conversar", "menu": "Menu", "close": "Fechar", "home": "início mateusfb.ai" },
-  "hero": { "version": "v0.1", "eyebrow": "Construindo agora · vibe100coding kit", "title": "Construindo ferramentas, agentes e conteúdo com IA.", "sub": "Repositórios abertos, apps desktop e notas — entregues em público, um agente de cada vez.", "primary": "Ver projetos", "secondary": "Ler textos" },
-  "projects": { "num": "01", "eyebrow": "Projetos", "title": "O que estou construindo", "body": "Ferramentas e produtos open-source, construídos com Claude Code e entregues em público.", "stars": "estrelas", "updated": "atualizado", "open": "GitHub", "building": "Em andamento", "all": "Todos os projetos", "filterAll": "Todos", "filterShipped": "Entregues", "filterBuilding": "Em construção" },
-  "where": {
-    "num": "02", "eyebrow": "Onde eu fico", "title": "Uma pessoa, uma pilha de agentes e coisas que saem do papel.", "body": "Eu fico entre a ideia e a produção. Os agentes constroem; eu dou a direção e aprovo o que sai.",
-    "cards": [
-      { "eyebrow": "A ideia", "title": "Ideias deviam\nse entregar sozinhas.", "body": "A maioria das ideias morre entre a anotação e o repositório. Eu defino a direção, escrevo a spec e deixo o build rodar." },
-      { "eyebrow": "Os agentes", "title": "Uma camada que\né dona do build.", "body": "Agentes do Claude Code planejam, escrevem, testam e revisam. Skills e kits codificam como eu trabalho, e toda sessão começa no nível do dono." },
-      { "eyebrow": "A entrega", "title": "Todo mundo prompta.\nEu entrego.", "body": "Apps desktop, ferramentas web, motores de conteúdo. Cada um público, documentado e feito pra ser reaproveitado." }
-    ],
-    "layers": { "you": { "title": "Você", "body": "Direção, gosto, prioridades." }, "agents": { "title": "Agentes Claude Code", "body": "Planejam, constroem, testam, revisam — em paralelo." }, "kits": { "title": "Kits & skills Spyko", "body": "Fluxos codificados, reaproveitáveis entre projetos." }, "ship": { "title": "Produtos entregues", "body": "Apps, ferramentas e conteúdo que chegam nas pessoas." }, "more": "+ mais" }
+  "meta": {
+    "title": "mateusfb.ai — construindo ferramentas, agentes e conteúdo com IA",
+    "description": "Repositórios, criações e notas do Mateus FB. Construído em público com agentes de IA."
   },
-  "writing": { "num": "03", "eyebrow": "Textos", "title": "Notas de quem constrói", "body": "Notas curtas e práticas sobre construir com agentes.", "all": "Todos os textos", "read": "Ler", "empty": "Ainda sem posts.", "onlyIn": "Este post só existe em {locale}." },
-  "cta": { "title": "Construindo em público.", "body": "Acompanhe os repositórios ou manda um oi — respondo toda mensagem.", "github": "GitHub", "email": "E-mail" },
-  "footer": { "projects": "Projetos", "site": "Site", "social": "Social", "legal": "Legal", "status": "Tudo funcionando", "built": "Feito no Brasil", "tagline": "Ferramentas, agentes e conteúdo.\nEntregues em público.", "rights": "© 2026 mateusfb.ai", "privacy": "Privacidade", "license": "Licença (MIT)" },
-  "about": { "title": "Sobre", "body": "Sou o Mateus. Construo software e conteúdo com agentes de IA — apps desktop pra macOS, ferramentas web e os kits que deixam o próximo build mais rápido. Tudo aqui é aberto.", "stack": "Stack", "contact": "Contato" },
-  "post": { "back": "Voltar pros textos", "published": "Publicado" },
-  "notFound": { "title": "Não encontrado", "body": "Essa página não existe.", "home": "Ir pro início" }
+  "nav": {
+    "projects": "Projetos",
+    "writing": "Textos",
+    "about": "Sobre",
+    "github": "GitHub",
+    "talk": "Vamos conversar",
+    "menu": "Menu",
+    "close": "Fechar",
+    "home": "início mateusfb.ai"
+  },
+  "hero": {
+    "version": "v0.1",
+    "eyebrow": "Construindo agora · vibe100coding kit",
+    "title": "Construindo ferramentas, agentes e conteúdo com IA.",
+    "sub": "Repositórios abertos, apps desktop e notas — entregues em público, um agente de cada vez.",
+    "primary": "Ver projetos",
+    "secondary": "Ler textos"
+  },
+  "projects": {
+    "num": "01",
+    "eyebrow": "Projetos",
+    "title": "O que estou construindo",
+    "body": "Ferramentas e produtos open-source, construídos com Claude Code e entregues em público.",
+    "stars": "estrelas",
+    "updated": "atualizado",
+    "open": "GitHub",
+    "building": "Em andamento",
+    "all": "Todos os projetos",
+    "filterAll": "Todos",
+    "filterShipped": "Entregues",
+    "filterBuilding": "Em construção"
+  },
+  "where": {
+    "num": "02",
+    "eyebrow": "Onde eu fico",
+    "title": "Uma pessoa, uma pilha de agentes e coisas que saem do papel.",
+    "body": "Eu fico entre a ideia e a produção. Os agentes constroem; eu dou a direção e aprovo o que sai.",
+    "cards": [
+      {
+        "eyebrow": "A ideia",
+        "title": "Ideias deviam\nse entregar sozinhas.",
+        "body": "A maioria das ideias morre entre a anotação e o repositório. Eu defino a direção, escrevo a spec e deixo o build rodar."
+      },
+      {
+        "eyebrow": "Os agentes",
+        "title": "Uma camada que\né dona do build.",
+        "body": "Agentes do Claude Code planejam, escrevem, testam e revisam. Skills e kits codificam como eu trabalho, e toda sessão começa no nível do dono."
+      },
+      {
+        "eyebrow": "A entrega",
+        "title": "Todo mundo prompta.\nEu entrego.",
+        "body": "Apps desktop, ferramentas web, motores de conteúdo. Cada um público, documentado e feito pra ser reaproveitado."
+      }
+    ],
+    "layers": {
+      "you": {
+        "title": "Você",
+        "body": "Direção, gosto, prioridades."
+      },
+      "agents": {
+        "title": "Agentes Claude Code",
+        "body": "Planejam, constroem, testam, revisam — em paralelo."
+      },
+      "kits": {
+        "title": "Kits & skills Spyko",
+        "body": "Fluxos codificados, reaproveitáveis entre projetos."
+      },
+      "ship": {
+        "title": "Produtos entregues",
+        "body": "Apps, ferramentas e conteúdo que chegam nas pessoas."
+      },
+      "more": "+ mais"
+    }
+  },
+  "writing": {
+    "num": "03",
+    "eyebrow": "Textos",
+    "title": "Notas de quem constrói",
+    "body": "Notas curtas e práticas sobre construir com agentes.",
+    "all": "Todos os textos",
+    "read": "Ler",
+    "empty": "Ainda sem posts.",
+    "onlyIn": "Este post só existe em {locale}."
+  },
+  "cta": {
+    "title": "Construindo em público.",
+    "body": "Acompanhe os repositórios ou manda um oi — respondo toda mensagem.",
+    "github": "GitHub",
+    "email": "E-mail"
+  },
+  "footer": {
+    "projects": "Projetos",
+    "site": "Site",
+    "social": "Social",
+    "legal": "Legal",
+    "status": "Tudo funcionando",
+    "built": "Feito no Brasil",
+    "tagline": "Ferramentas, agentes e conteúdo.\nEntregues em público.",
+    "rights": "© 2026 mateusfb.ai",
+    "privacy": "Privacidade",
+    "license": "Licença (MIT)"
+  },
+  "about": {
+    "title": "Sobre",
+    "body": "Sou o Mateus. Construo software e conteúdo com agentes de IA — apps desktop pra macOS, ferramentas web e os kits que deixam o próximo build mais rápido. Tudo aqui é aberto.",
+    "stack": "Stack",
+    "contact": "Contato",
+    "privacyTitle": "Privacidade",
+    "privacyBody": "Este site não usa cookies nem rastreadores. As estatísticas dos projetos vêm da API pública do GitHub."
+  },
+  "post": {
+    "back": "Voltar pros textos",
+    "published": "Publicado"
+  },
+  "notFound": {
+    "title": "Não encontrado",
+    "body": "Essa página não existe.",
+    "home": "Ir pro início"
+  }
 }

@@ -81,4 +81,8 @@
 @container (max-width: 500px) {
   .where-flat .where-flat-grid { grid-template-columns: minmax(0, 1fr); }
   .where-flat .where-flat-glyph { aspect-ratio: auto; min-height: 128px; }
+.prose {
+  max-width: 760px;
+  margin-left: auto;
+  margin-right: auto;
 }
