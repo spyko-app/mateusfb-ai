@@ -1,0 +1,15 @@
+:root {
+  --bg: #000;
+  --fg: #fff;
+  --ease-out-quint: cubic-bezier(.22,1,.36,1);
+  --ease-in-out: cubic-bezier(.65,0,.35,1);
+  --dur-200: 200ms;
+  --dur-360: 360ms;
+  --dur-600: 600ms;
+  --dur-700: 700ms;
+  --container: 1512px;
+  --gutter: 120px;
+  --frame: 30px;
+  --cell-gap: 9px;
+  --nav-h: 46px;
+}

@@ -1,26 +1,73 @@
 @import "tailwindcss";
+@import "./tokens.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-bg: var(--bg);
+  --color-fg: var(--fg);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  --ease-out-quint: cubic-bezier(.22,1,.36,1);
+  --ease-in-out: cubic-bezier(.65,0,.35,1);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@layer base {
+  html { background: var(--bg); color: var(--fg); color-scheme: dark; }
+  body { font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+  :focus-visible { outline: 1px solid var(--fg); outline-offset: 4px; }
+  ::selection { background: var(--fg); color: var(--bg); }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@utility text-display {
+  font-size: 54px;
+  line-height: 1.1;
+  letter-spacing: -2px;
+  font-weight: 400;
+}
+@utility text-subhead {
+  font-size: 48px;
+  line-height: 1.1;
+  letter-spacing: -1px;
+  font-weight: 400;
+}
+@utility text-pullquote {
+  font-size: 36px;
+  line-height: 1.1;
+  font-weight: 400;
+  letter-spacing: -.5px;
+}
+@utility text-body {
+  font-size: 24px;
+  line-height: 1.2;
+  font-weight: 400;
+}
+@utility text-caption {
+  font-size: 14px;
+  line-height: 1.5;
+  font-weight: 400;
+}
+@utility text-button {
+  font-size: 14px;
+  line-height: 1.5;
+  font-weight: 500;
+}
+@utility text-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 1;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+@media (max-width: 767px) {
+  .text-display { font-size: 40px; letter-spacing: -1.4px; }
+  .text-subhead { font-size: 34px; }
+  .text-pullquote { font-size: 28px; }
+  .text-body { font-size: 18px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
 }
