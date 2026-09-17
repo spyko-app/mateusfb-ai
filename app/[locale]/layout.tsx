@@ -5,6 +5,9 @@ import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { isLocale, locales, getMessages, type Locale } from "@/lib/i18n";
 import { GlassFilter } from "@/components/ds";
+import { SmoothScroll } from "@/components/SmoothScroll";
+import { Nav } from "@/components/nav/Nav";
+import { Footer } from "@/components/sections/Footer";
 import "../globals.css";
 
 export const generateStaticParams = () => locales.map((locale) => ({ locale }));
@@ -35,7 +38,11 @@ export default async function LocaleLayout({
     <html lang={locale as Locale} className={`${GeistSans.variable} ${GeistMono.variable}`} suppressHydrationWarning>
       <body>
         <GlassFilter />
-        {children}
+        <SmoothScroll>
+          <Nav locale={locale} />
+          <main>{children}</main>
+          <Footer locale={locale} />
+        </SmoothScroll>
       </body>
     </html>
   );
