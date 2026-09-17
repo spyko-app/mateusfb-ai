@@ -1,0 +1,24 @@
+<!doctype html><meta charset="utf-8"><title>mark variants</title>
+<style>
+body{margin:0;background:#000;color:#fff;font:12px/1.4 ui-monospace,Menlo,monospace}
+.row{display:flex;gap:24px;padding:16px 24px;align-items:center;border-bottom:1px solid #222}
+.row h2{width:60px;margin:0;font-size:14px}
+.cell{display:flex;flex-direction:column;align-items:center;gap:6px}
+.pad{display:flex;align-items:center;justify-content:center;background:#000;color:#fff}
+.inv{background:#fff;color:#000}
+svg{display:block}
+#lockup{padding:32px;display:flex;align-items:center;gap:20px;font-family:Geist,"Geist Sans",ui-sans-serif,system-ui;font-weight:500;font-size:64px;letter-spacing:-.01em;width:512px;box-sizing:border-box;justify-content:center}
+#lockup .ai{font-family:"Geist Mono",ui-monospace,Menlo,monospace;font-weight:400;opacity:.6}
+</style>
+<script>
+const V={
+ A:{core:{r:5},orbit:{r:12,sw:2,gap:80,start:45},sat:{a:225,r:2.5}},
+ B:{core:{r:4.5},orbit:{r:12.5,sw:1.5,gap:110,start:300},sat:{a:120,r:2.75}},
+ C:{core:{r:6},orbit:{r:11.5,sw:2.5,gap:60,start:90},sat:{a:270,r:2}},
+};
+const rad=d=>d*Math.PI/180;
+function path(o){const a0=rad(o.start+o.gap),a1=rad(o.start+360);const p=a=>`${(16+o.r*Math.cos(a)).toFixed(3)} ${(16+o.r*Math.sin(a)).toFixed(3)}`;const L=360-o.gap>180?1:0;return `M ${p(a0)} A ${o.r} ${o.r} 0 ${L} 1 ${p(a1)}`}
+function svg(v,s){const g=V[v],sa=rad(g.sat.a);return `<svg width="${s}" height="${s}" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="${g.core.r}" fill="currentColor"/><path d="${path(g.orbit)}" stroke="currentColor" stroke-width="${g.orbit.sw}" stroke-linecap="round"/><circle cx="${(16+g.orbit.r*Math.cos(sa)).toFixed(3)}" cy="${(16+g.orbit.r*Math.sin(sa)).toFixed(3)}" r="${g.sat.r}" fill="currentColor"/></svg>`}
+addEventListener('DOMContentLoaded',()=>{let h='';for(const v of Object.keys(V)){h+=`<div class="row"><h2>${v}</h2>`;for(const inv of [false,true])for(const s of [16,32,128])h+=`<div class="cell"><div class="pad ${inv?'inv':''}" style="width:${Math.max(s+16,48)}px;height:${Math.max(s+16,48)}px">${svg(v,s)}</div><span>${s}</span></div>`;h+=`</div>`}
+h+=`<div id="lockup">${svg('B',64)}<span>mateusfb<span class="ai">.ai</span></span></div>`;document.body.innerHTML=h});
+</script>

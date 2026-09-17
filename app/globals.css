@@ -71,3 +71,5 @@
     transition-duration: .01ms !important;
   }
 }
+
+@keyframes mfb-orbit { to { transform: rotate(360deg); } }
