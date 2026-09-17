@@ -20,8 +20,9 @@ describe("ProjectCard", () => {
     expect(screen.getByText("web.ai")).toBeInTheDocument();
     expect(screen.getByText("TypeScript")).toBeInTheDocument();
     expect(screen.getByText(/12/)).toBeInTheDocument();
-    const link = screen.getByRole("link", { name: /GitHub/ });
+    const link = screen.getByRole("link");
     expect(link).toHaveAttribute("href", "https://github.com/spyko-app/web.ai");
+    expect(link).toHaveAttribute("target", "_blank");
   });
 
   it("shows In progress badge AND the GitHub link since the repo now exists", () => {
@@ -34,7 +35,7 @@ describe("ProjectCard", () => {
       />,
     );
     expect(screen.getByText("In progress")).toBeInTheDocument();
-    const link = screen.getByRole("link", { name: /GitHub/ });
+    const link = screen.getByRole("link");
     expect(link).toHaveAttribute("href", "https://github.com/spyko-app/vibe100coding-kit");
   });
 });

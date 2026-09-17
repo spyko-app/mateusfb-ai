@@ -10,7 +10,11 @@ export function CornerMarks() {
   return (
     <>
       {(Object.keys(paths) as (keyof typeof paths)[]).map((k) => (
-        <span key={k} aria-hidden="true" className={`pointer-events-none absolute leading-none ${pos[k]}`}>
+        <span
+          key={k}
+          aria-hidden="true"
+          className={`pointer-events-none absolute leading-none transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 ${pos[k]}`}
+        >
           <svg width="7" height="7" viewBox="0 0 10 10" fill="none" overflow="visible">
             <path d={paths[k]} stroke="currentColor" strokeWidth="1.5" />
           </svg>

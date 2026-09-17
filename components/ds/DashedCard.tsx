@@ -16,7 +16,7 @@ export function DashedCard<T extends ElementType = "div">({
       data-active={active ? "true" : "false"}
       className={`group relative border border-dashed border-fg/15 transition-colors duration-200 ${
         active ? "bg-fg text-bg" : "bg-transparent text-fg"
-      } ${className}`}
+      } ${className}`.trim()}
       {...rest}
     >
       {children}
