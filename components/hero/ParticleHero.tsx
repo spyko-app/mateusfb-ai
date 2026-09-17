@@ -26,12 +26,12 @@ const REF_SCALE = 720 / 850;
 /** ponto base em px CSS (×dpr no shader; o sprite radial só acende no miolo → ~1,5 px visíveis = delicado) */
 const POINT_BASE = 2.2;
 /** campo de força do cursor (px CSS): raio, deslocamento máximo, ângulo do redemoinho */
-const FORCE_RADIUS = 110;
-const FORCE_STRENGTH = 26;
-const SWIRL_RAD = (35 * Math.PI) / 180;
-/** inércia: aproxima rápido do alvo, solta devagar (0,08/frame ≈ rastro de ~0,5 s) */
-const LERP_IN = 0.18;
-const LERP_OUT = 0.08;
+const FORCE_RADIUS = 140;
+const FORCE_STRENGTH = 7;
+const SWIRL_RAD = (20 * Math.PI) / 180;
+/** inércia: aproxima rápido do alvo, solta devagar (0,05/frame ≈ rastro mais longo e suave) */
+const LERP_IN = 0.1;
+const LERP_OUT = 0.05;
 /** respiração: pulso lento de brilho/tamanho do campo inteiro (sem mover posição) */
 const BREATH_PERIOD_S = 6;
 const BREATH_AMT = 0.08;
@@ -52,9 +52,10 @@ const vert = /* glsl */ `
     float tw = 0.55 + 0.45 * sin(uTime * speed + aSeed * 6.2831853);
     tw = mix(tw, 0.85, uStatic);
     vec3 p = position + vec3(aOffset, 0.0);
-    // o cursor "acende" a região: dentro do raio, +30% de brilho e tamanho
-    float lit = 1.0 - smoothstep(0.0, uRadius, distance(p.xy, uMouse));
-    float boost = 1.0 + 0.3 * lit;
+    // o cursor "acende" a região: dentro do raio, +12% de brilho e tamanho (sutil)
+    float litRaw = 1.0 - smoothstep(0.0, uRadius, distance(p.xy, uMouse));
+    float lit = litRaw * litRaw;
+    float boost = 1.0 + 0.12 * lit;
     vAlpha = tw * (0.55 + 0.45 * aDepth) * uBreath * boost;
     vec4 mv = modelViewMatrix * vec4(p, 1.0);
     gl_Position = projectionMatrix * mv;
@@ -193,7 +194,8 @@ export default function ParticleHero({ reduced = false }: ParticleHeroProps) {
             const d = Math.sqrt(dx * dx + dy * dy);
             if (d < R) {
               const u = d / R;
-              const f = 1 - u * u * (3 - 2 * u); // smoothstep(R, 0, d)
+              const s = 1 - u * u * (3 - 2 * u); // smoothstep(R, 0, d)
+              const f = s * s; // smoothstep squared: falloff mais largo e suave
               const inv = d > 1e-4 ? 1 / d : 0;
               const nx = dx * inv;
               const ny = dy * inv;
