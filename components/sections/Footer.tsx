@@ -5,7 +5,7 @@ import { getMessages, localePath, type Locale } from "@/lib/i18n";
 import { projects, repoUrl, githubProfile, contactEmail } from "@/content/projects";
 import { LocaleSwitch } from "@/components/nav/LocaleSwitch";
 
-export const LICENSE_URL = "https://github.com/Mateus-fb/mateusfb-ai/blob/main/LICENSE";
+export const LICENSE_URL = "https://github.com/spyko-app/mateusfb-ai/blob/main/LICENSE";
 
 type Item = { label: string; href: string; external?: boolean };
 

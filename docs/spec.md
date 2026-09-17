@@ -1,7 +1,7 @@
 # mateusfb.ai — site pessoal (conteúdo + repositórios + criações) — Design
 
 **Data:** 2026-09-17 · **Dono:** Mateus (Mateus-fb) · **Status:** aprovado pelo dono (brainstorming 17/set)
-**Deploy alvo:** `https://mateusfb-ai.vercel.app` (conta Vercel `nexyocontato-2896`) · **Repo:** `github.com/Mateus-fb/mateusfb-ai` (público) em `/Volumes/PortableSSD/mateusfb-ai` (fora do monorepo Spyko).
+**Deploy alvo:** `https://mateusfb-ai.vercel.app` (conta Vercel `nexyocontato-2896`) · **Repo:** `github.com/spyko-app/mateusfb-ai` (público) em `/Volumes/PortableSSD/mateusfb-ai` (fora do monorepo Spyko).
 
 ## 1. Objetivo
 
@@ -118,7 +118,7 @@ Grid `lg:grid-cols-2`, `pl` alinhado ao container.
 
 1. `npm run lint && npm run typecheck && npm run test && npm run build` verdes, saída colada no chat.
 2. **agent-browser** local (`next start`) e no preview Vercel, 1440×900 e 390×844: screenshots de hero, 02 em 4 posições de scroll (p≈0, .3, .6, 1), footer, `/pt`, `/writing/<post>`; checagens: nav colapsa ao rolar, card ativo inverte, diagrama passa pelos 3 estados, sem erro no console, links dos 4 repos respondem 200.
-3. Repo `Mateus-fb/mateusfb-ai` público com README (como postar: criar `content/posts/slug.en.mdx` + `slug.pt.mdx`, push), projeto Vercel `mateusfb-ai` ligado ao repo, produção em `mateusfb-ai.vercel.app`.
+3. Repo `spyko-app/mateusfb-ai` público com README (como postar: criar `content/posts/slug.en.mdx` + `slug.pt.mdx`, push), projeto Vercel `mateusfb-ai` ligado ao repo, produção em `mateusfb-ai.vercel.app`.
 4. `docs/design-system.md`, `docs/brand/README.md` e nota em `learnings/` (SpykoStudio) escritas.
 
 ## 8. Fora de escopo (YAGNI)
