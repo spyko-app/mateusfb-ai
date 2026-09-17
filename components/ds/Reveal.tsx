@@ -1,8 +1,9 @@
 "use client";
 
-import { motion, useReducedMotion } from "motion/react";
+import { motion } from "motion/react";
 import type { ElementType, ReactNode } from "react";
 import { revealVariants, REVEAL_VIEWPORT } from "@/lib/motion";
+import { useReducedMotionSafe } from "@/lib/use-reduced-motion";
 
 export function Reveal({
   as = "div",
@@ -15,13 +16,8 @@ export function Reveal({
   className?: string;
   children: ReactNode;
 }) {
-  const reduced = useReducedMotion();
-
-  if (reduced) {
-    const Tag = as;
-    return <Tag className={className}>{children}</Tag>;
-  }
-
+  // Mesma árvore com e sem reduced-motion (sem mismatch de hidratação): só a transição muda.
+  const reduced = useReducedMotionSafe();
   const MotionTag = motion[as as "div"] ?? motion.div;
 
   return (
@@ -31,7 +27,7 @@ export function Reveal({
       initial="hidden"
       whileInView="visible"
       viewport={REVEAL_VIEWPORT}
-      transition={{ ...revealVariants.visible.transition, delay }}
+      transition={reduced ? { duration: 0 } : { ...revealVariants.visible.transition, delay }}
     >
       {children}
     </MotionTag>
