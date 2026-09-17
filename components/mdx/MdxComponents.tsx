@@ -1,10 +1,10 @@
 import type { ComponentPropsWithoutRef } from "react";
 
 export const mdxComponents = {
-  h2: (props: ComponentPropsWithoutRef<"h2">) => <h2 className="text-subhead mt-16" {...props} />,
+  h2: (props: ComponentPropsWithoutRef<"h2">) => <h2 className="text-subhead mb-6 mt-16" {...props} />,
   h3: (props: ComponentPropsWithoutRef<"h3">) => <h3 className="text-pullquote mt-10" {...props} />,
   p: (props: ComponentPropsWithoutRef<"p">) => (
-    <p className="mt-6 max-w-[68ch] text-[20px] leading-[1.5] text-fg/85" {...props} />
+    <p className="mt-6 text-[19px] leading-[1.6] text-fg/85" {...props} />
   ),
   a: (props: ComponentPropsWithoutRef<"a">) => <a className="underline underline-offset-4" {...props} />,
   code: (props: ComponentPropsWithoutRef<"code">) => (
@@ -21,10 +21,10 @@ export const mdxComponents = {
     <img className="max-w-full grayscale" {...props} alt={props.alt ?? ""} />
   ),
   ul: (props: ComponentPropsWithoutRef<"ul">) => (
-    <ul className="mt-6 max-w-[68ch] list-disc pl-6 text-[20px] leading-[1.5] text-fg/85" {...props} />
+    <ul className="mt-6 list-disc pl-6 text-[19px] leading-[1.6] text-fg/85" {...props} />
   ),
   ol: (props: ComponentPropsWithoutRef<"ol">) => (
-    <ol className="mt-6 max-w-[68ch] list-decimal pl-6 text-[20px] leading-[1.5] text-fg/85" {...props} />
+    <ol className="mt-6 list-decimal pl-6 text-[19px] leading-[1.6] text-fg/85" {...props} />
   ),
   blockquote: (props: ComponentPropsWithoutRef<"blockquote">) => (
     <blockquote className="border-l border-fg/30 pl-5 text-fg/70" {...props} />

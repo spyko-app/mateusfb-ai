@@ -38,31 +38,34 @@ export default async function PostPage({
 
   return (
     <>
-    <Container className="flex flex-col gap-10 py-[80px]">
-      <Link href={localePath(locale, "/writing")} data-scramble className="text-button text-fg/60 transition-colors duration-200 hover:text-fg">
-        ← <ScrambleText text={m.post.back} />
-      </Link>
-      {post.locale !== locale && (
-        <DashedCard className="p-6 text-caption text-fg/70">
-          {t(m, "writing.onlyIn", { locale: post.locale.toUpperCase() })}
-        </DashedCard>
-      )}
-      <header className="flex flex-col gap-4">
-        <time className="text-eyebrow text-fg/60" dateTime={post.date}>
-          {m.post.published} · {formatDate(post.date, post.locale as Locale)}
-        </time>
-        <h1 className="text-display">
-          {titleLines(post.title).map((line) => (
-            <span key={line} className="block">
-              {line}
-            </span>
-          ))}
-        </h1>
-        <p className="max-w-[60%] text-body text-fg/70">{post.summary}</p>
-      </header>
-      <article className="prose">
-        <MDXRemote source={post.content} components={mdxComponents} />
-      </article>
+    <Container className="py-[80px]">
+      <div className="mx-auto flex max-w-[760px] flex-col gap-10">
+        <Link href={localePath(locale, "/writing")} data-scramble className="text-button text-fg/60 transition-colors duration-200 hover:text-fg">
+          ← <ScrambleText text={m.post.back} />
+        </Link>
+        {post.locale !== locale && (
+          <DashedCard className="p-6 text-caption text-fg/70">
+            {t(m, "writing.onlyIn", { locale: post.locale.toUpperCase() })}
+          </DashedCard>
+        )}
+        <header className="flex flex-col gap-4">
+          <time className="text-eyebrow text-fg/60" dateTime={post.date}>
+            {m.post.published} · {formatDate(post.date, post.locale as Locale)}
+          </time>
+          <h1 className="text-display">
+            {titleLines(post.title).map((line) => (
+              <span key={line} className="block">
+                {line}
+              </span>
+            ))}
+          </h1>
+          <p className="text-body text-fg/60">{post.summary}</p>
+        </header>
+        <hr className="border-t border-dashed border-fg/15" />
+        <article className="prose">
+          <MDXRemote source={post.content} components={mdxComponents} />
+        </article>
+      </div>
     </Container>
     <PageEnd locale={locale} />
     </>
