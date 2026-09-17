@@ -61,3 +61,13 @@ export function getPost(locale: Locale, slug: string, dir = DEFAULT_DIR): Post |
     null
   );
 }
+
+export function formatDate(iso: string, locale: Locale): string {
+  const date = new Date(`${iso}T00:00:00Z`);
+  return new Intl.DateTimeFormat(locale === "pt" ? "pt-BR" : "en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    timeZone: "UTC",
+  }).format(date);
+}

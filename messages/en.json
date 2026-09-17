@@ -1,21 +1,125 @@
 {
-  "meta": { "title": "mateusfb.ai — building tools, agents and content with AI", "description": "Repositories, creations and notes by Mateus FB. Built in public with AI agents." },
-  "nav": { "projects": "Projects", "writing": "Writing", "about": "About", "github": "GitHub", "talk": "Let's talk", "menu": "Menu", "close": "Close", "home": "mateusfb.ai home" },
-  "hero": { "version": "v0.1", "eyebrow": "Now building · vibe100coding kit", "title": "Building tools, agents and content with AI.", "sub": "Open repositories, desktop apps and notes — shipped in public, one agent at a time.", "primary": "See projects", "secondary": "Read writing" },
-  "projects": { "num": "01", "eyebrow": "Projects", "title": "Things I'm building", "body": "Open-source tools and products, built with Claude Code and shipped in public.", "stars": "stars", "updated": "updated", "open": "GitHub", "building": "In progress", "all": "All projects", "filterAll": "All", "filterShipped": "Shipped", "filterBuilding": "Building" },
-  "where": {
-    "num": "02", "eyebrow": "Where I sit", "title": "A person, a stack of agents, and things that ship.", "body": "I sit between the idea and production. Agents do the building; I set direction and approve what goes out.",
-    "cards": [
-      { "eyebrow": "The idea", "title": "Ideas should\nship themselves.", "body": "Most ideas die in the gap between a note and a repository. I set direction, write the spec, and let the build run." },
-      { "eyebrow": "The agents", "title": "A layer that\nowns the build.", "body": "Claude Code agents plan, write, test and review. Skills and kits encode how I work so every session starts at the owner's level." },
-      { "eyebrow": "The output", "title": "Everyone else prompts.\nI ship.", "body": "Desktop apps, web tools, content engines. Each one public, each one documented, each one built to be reused." }
-    ],
-    "layers": { "you": { "title": "You", "body": "Direction, taste, priorities." }, "agents": { "title": "Claude Code agents", "body": "Plan, build, test, review — in parallel." }, "kits": { "title": "Spyko kits & skills", "body": "Encoded workflows, reusable across projects." }, "ship": { "title": "Shipped products", "body": "Apps, tools and content that reach people." }, "more": "+ more" }
+  "meta": {
+    "title": "mateusfb.ai — building tools, agents and content with AI",
+    "description": "Repositories, creations and notes by Mateus FB. Built in public with AI agents."
   },
-  "writing": { "num": "03", "eyebrow": "Writing", "title": "Notes from building", "body": "Short, practical notes on building with agents.", "all": "All writing", "read": "Read", "empty": "No posts yet.", "onlyIn": "This post is only available in {locale}." },
-  "cta": { "title": "Building in public.", "body": "Follow the repositories or say hi — I answer every message.", "github": "GitHub", "email": "Email" },
-  "footer": { "projects": "Projects", "site": "Site", "social": "Social", "legal": "Legal", "status": "All systems normal", "built": "Built in Brasil", "tagline": "Tools, agents and content.\nShipped in public.", "rights": "© 2026 mateusfb.ai", "privacy": "Privacy", "license": "License (MIT)" },
-  "about": { "title": "About", "body": "I'm Mateus. I build software and content with AI agents — desktop apps for macOS, web tools, and the kits that make the next build faster. Everything here is open.", "stack": "Stack", "contact": "Contact" },
-  "post": { "back": "Back to writing", "published": "Published" },
-  "notFound": { "title": "Not found", "body": "This page doesn't exist.", "home": "Go home" }
+  "nav": {
+    "projects": "Projects",
+    "writing": "Writing",
+    "about": "About",
+    "github": "GitHub",
+    "talk": "Let's talk",
+    "menu": "Menu",
+    "close": "Close",
+    "home": "mateusfb.ai home"
+  },
+  "hero": {
+    "version": "v0.1",
+    "eyebrow": "Now building · vibe100coding kit",
+    "title": "Building tools, agents and content with AI.",
+    "sub": "Open repositories, desktop apps and notes — shipped in public, one agent at a time.",
+    "primary": "See projects",
+    "secondary": "Read writing"
+  },
+  "projects": {
+    "num": "01",
+    "eyebrow": "Projects",
+    "title": "Things I'm building",
+    "body": "Open-source tools and products, built with Claude Code and shipped in public.",
+    "stars": "stars",
+    "updated": "updated",
+    "open": "GitHub",
+    "building": "In progress",
+    "all": "All projects",
+    "filterAll": "All",
+    "filterShipped": "Shipped",
+    "filterBuilding": "Building"
+  },
+  "where": {
+    "num": "02",
+    "eyebrow": "Where I sit",
+    "title": "A person, a stack of agents, and things that ship.",
+    "body": "I sit between the idea and production. Agents do the building; I set direction and approve what goes out.",
+    "cards": [
+      {
+        "eyebrow": "The idea",
+        "title": "Ideas should\nship themselves.",
+        "body": "Most ideas die in the gap between a note and a repository. I set direction, write the spec, and let the build run."
+      },
+      {
+        "eyebrow": "The agents",
+        "title": "A layer that\nowns the build.",
+        "body": "Claude Code agents plan, write, test and review. Skills and kits encode how I work so every session starts at the owner's level."
+      },
+      {
+        "eyebrow": "The output",
+        "title": "Everyone else prompts.\nI ship.",
+        "body": "Desktop apps, web tools, content engines. Each one public, each one documented, each one built to be reused."
+      }
+    ],
+    "layers": {
+      "you": {
+        "title": "You",
+        "body": "Direction, taste, priorities."
+      },
+      "agents": {
+        "title": "Claude Code agents",
+        "body": "Plan, build, test, review — in parallel."
+      },
+      "kits": {
+        "title": "Spyko kits & skills",
+        "body": "Encoded workflows, reusable across projects."
+      },
+      "ship": {
+        "title": "Shipped products",
+        "body": "Apps, tools and content that reach people."
+      },
+      "more": "+ more"
+    }
+  },
+  "writing": {
+    "num": "03",
+    "eyebrow": "Writing",
+    "title": "Notes from building",
+    "body": "Short, practical notes on building with agents.",
+    "all": "All writing",
+    "read": "Read",
+    "empty": "No posts yet.",
+    "onlyIn": "This post is only available in {locale}."
+  },
+  "cta": {
+    "title": "Building in public.",
+    "body": "Follow the repositories or say hi — I answer every message.",
+    "github": "GitHub",
+    "email": "Email"
+  },
+  "footer": {
+    "projects": "Projects",
+    "site": "Site",
+    "social": "Social",
+    "legal": "Legal",
+    "status": "All systems normal",
+    "built": "Built in Brasil",
+    "tagline": "Tools, agents and content.\nShipped in public.",
+    "rights": "© 2026 mateusfb.ai",
+    "privacy": "Privacy",
+    "license": "License (MIT)"
+  },
+  "about": {
+    "title": "About",
+    "body": "I'm Mateus. I build software and content with AI agents — desktop apps for macOS, web tools, and the kits that make the next build faster. Everything here is open.",
+    "stack": "Stack",
+    "contact": "Contact",
+    "privacyTitle": "Privacy",
+    "privacyBody": "This site sets no cookies and runs no trackers. Project stats come from the public GitHub API."
+  },
+  "post": {
+    "back": "Back to writing",
+    "published": "Published"
+  },
+  "notFound": {
+    "title": "Not found",
+    "body": "This page doesn't exist.",
+    "home": "Go home"
+  }
 }
