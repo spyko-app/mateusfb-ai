@@ -67,8 +67,7 @@ mateusfb-ai/
 
 ## 4. Marca — mateusfb.ai
 
-**Conceito do ícone (abstrato, não-literal):** **"Núcleo + órbita"** — um ponto sólido central (a pessoa/ideia), um arco fino orbitando (o processo de construir com IA) e um ponto menor sobre a órbita (o agente trabalhando em volta e entregando). Lê-se a 16px, tem versão animada (ponto orbital gira 1 volta a cada 8s, ease linear; no rodapé, vira `ShufflingMark`: os pontos se embaralham em posições aleatórias e voltam, como no Antimetal).
-- A tarefa de marca gera **3 variantes** da família (espessura do arco / abertura / posição do satélite), renderiza cada uma a 16, 32, 128px em P e em B, e escolhe pela régua: legível a 16px · equilíbrio óptico (centro visual = centro geométrico) · sem parecer letra · sem parecer um planeta genérico (abertura do arco ≥ 60°).
+**Conceito do ícone (o que foi entregue): pilha isométrica ("3D em 2D").** Três planos quadrados em projeção isométrica (losangos a 30°), empilhados com deslocamento vertical; o de cima sólido, os dois de baixo só contorno fino. Abstrai "camadas que constroem algo" (ideias → agentes → entregue) e espelha o diagrama de pilha da seção 02. Lê a 16px; versão animada = o plano de cima "respira" (8s ease-in-out); no rodapé vira `ShufflingMark` (12 vértices embaralham no hover e voltam). Substituiu o conceito inicial "núcleo + órbita". Geometria, variantes comparadas (A/B/C) e regras de uso em `docs/brand/README.md`.
 - **Wordmark:** `mateusfb` em Geist Medium 500, ls −0.01em + `.ai` em Geist Mono 400, `fg/60`. **Lockup:** mark 16px + gap 8px + wordmark.
 - Entregas em `public/brand/`: `mark.svg`, `mark-inverted.svg`, `wordmark.svg`, `lockup.svg`, `app/icon.svg` (favicon), `app/opengraph-image.tsx` (1200×630: lockup + tagline), `docs/brand/README.md` (uso, área de respiro = 1× diâmetro do núcleo, tamanho mínimo 16px).
 
