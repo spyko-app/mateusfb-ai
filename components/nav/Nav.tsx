@@ -1,4 +1,4 @@
-import { GlassPill, Button } from "@/components/ds";
+import { GlassPill, Button, ScrambleText } from "@/components/ds";
 import { getMessages, localePath, type Locale } from "@/lib/i18n";
 import { githubProfile, contactEmail } from "@/content/projects";
 import { NavLinks, type NavLink } from "./NavLinks";
@@ -38,9 +38,10 @@ export function Nav({ locale, pathname }: { locale: Locale; pathname?: string })
                   href={githubProfile}
                   target="_blank"
                   rel="noreferrer"
-                  className="block px-[14px] py-[6px] text-button text-fg/60 transition-colors duration-200 hover:text-fg"
+                  data-scramble
+                  className="block px-5 py-[10px] text-button text-fg/60 transition-colors duration-200 hover:text-fg"
                 >
-                  {m.nav.github}
+                  <ScrambleText text={m.nav.github} />
                 </a>
               </li>
               <li>

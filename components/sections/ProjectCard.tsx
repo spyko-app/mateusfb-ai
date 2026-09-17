@@ -17,9 +17,15 @@ export function ProjectCard({
   const m = getMessages(locale);
   const url = repoUrl(project);
   const building = project.status === "building";
+  const linkProps = url ? { as: "a" as const, href: url, target: "_blank", rel: "noreferrer" } : {};
   return (
     <Reveal delay={index * 0.08}>
-      <DashedCard as="article" className="flex h-full min-h-[260px] flex-col justify-between p-6">
+      <DashedCard
+        {...linkProps}
+        className={`flex h-full min-h-[260px] flex-col justify-between p-6 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fg/60 focus-visible:ring-offset-2 ${
+          url ? "cursor-pointer hover:bg-fg/[0.04] hover:border-fg/40" : ""
+        }`}
+      >
         <div className="flex items-center justify-between gap-3">
           <Eyebrow>{stats.language ?? project.language}</Eyebrow>
           {building ? (
@@ -35,9 +41,12 @@ export function ProjectCard({
             ★ {stats.stars} · {m.projects.updated} {relativeTime(stats.pushedAt, locale)}
           </span>
           {url && (
-            <a href={url} target="_blank" rel="noreferrer" className="whitespace-nowrap text-fg hover:underline">
-              {m.projects.open} ↗
-            </a>
+            <span className="whitespace-nowrap text-fg">
+              {m.projects.open}{" "}
+              <span className="inline-block transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+                ↗
+              </span>
+            </span>
           )}
         </div>
       </DashedCard>

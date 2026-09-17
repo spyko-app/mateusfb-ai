@@ -32,7 +32,7 @@ describe("home", () => {
     const { container } = render(ui);
     const ids = Array.from(container.querySelectorAll("section[id]")).map((s) => s.id);
     expect(ids).toEqual(["top", "projects", "where", "writing", "cta"]);
-    expect(container.querySelectorAll("#projects article").length).toBe(4);
+    expect(container.querySelectorAll('#projects a[href^="https://github.com"]').length).toBe(4);
     expect(container.textContent).toContain(en.cta.title);
     expect(container.textContent).toContain(en.projects.title);
   });

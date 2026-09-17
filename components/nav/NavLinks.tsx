@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRef, useState, type MouseEvent } from "react";
 import { LocaleSwitch } from "./LocaleSwitch";
+import { ScrambleText } from "@/components/ds";
 import type { Locale } from "@/lib/i18n";
 
 export type NavLink = { label: string; href: string };
@@ -33,8 +34,12 @@ export function NavLinks({ links, locale, pathname }: { links: NavLink[]; locale
       />
       {links.map((l) => (
         <li key={l.href} onMouseEnter={onEnter} className="relative">
-          <Link href={l.href} className="block px-[14px] py-[6px] text-button text-fg/60 transition-colors duration-200 hover:text-fg">
-            {l.label}
+          <Link
+            href={l.href}
+            data-scramble
+            className="block px-[14px] py-[6px] text-button text-fg/60 transition-colors duration-200 hover:text-fg"
+          >
+            <ScrambleText text={l.label} />
           </Link>
         </li>
       ))}

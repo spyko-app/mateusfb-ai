@@ -5,5 +5,6 @@ export { DashedCard } from "./DashedCard";
 export { GlassPill } from "./GlassPill";
 export { GlassFilter } from "./GlassFilter";
 export { Button } from "./Button";
+export { ScrambleText } from "./ScrambleText";
 export { Reveal } from "./Reveal";
 export { SectionHeader } from "./SectionHeader";

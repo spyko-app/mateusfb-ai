@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRef } from "react";
 import type { MouseEvent, PointerEvent, ReactNode } from "react";
+import { ScrambleText } from "./ScrambleText";
 
 type Variant = "solid" | "outline";
 
@@ -34,6 +35,7 @@ export function Button({
 }) {
   const ref = useRef<HTMLElement | null>(null);
   const classes = `${base} ${variants[variant]} ${className}`;
+  const label = typeof children === "string" ? <ScrambleText text={children} /> : children;
 
   const handlePointerMove = (e: PointerEvent<HTMLElement>) => {
     if (!magnetic) return;
@@ -66,12 +68,13 @@ export function Button({
         <a
           ref={ref as React.Ref<HTMLAnchorElement>}
           href={href}
+          data-scramble
           {...(isHttp(href) ? { target: "_blank", rel: "noreferrer" } : {})}
           className={classes}
           onClick={onClick}
           {...magneticProps}
         >
-          {children}
+          {label}
         </a>
       );
     }
@@ -79,11 +82,12 @@ export function Button({
       <Link
         ref={ref as React.Ref<HTMLAnchorElement>}
         href={href}
+        data-scramble
         className={classes}
         onClick={onClick}
         {...magneticProps}
       >
-        {children}
+        {label}
       </Link>
     );
   }
@@ -92,11 +96,12 @@ export function Button({
     <button
       ref={ref as React.Ref<HTMLButtonElement>}
       type="button"
+      data-scramble
       className={classes}
       onClick={onClick}
       {...magneticProps}
     >
-      {children}
+      {label}
     </button>
   );
 }
