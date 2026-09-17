@@ -20,7 +20,8 @@ describe("getRepoStats", () => {
   });
   it("skips fetch when project has no repo", async () => {
     const f = vi.fn() as unknown as typeof fetch;
-    const s = await getRepoStats(projects[3], f);
+    const noRepo = { ...projects[3], owner: undefined, repo: undefined };
+    const s = await getRepoStats(noRepo, f);
     expect(f).not.toHaveBeenCalled();
     expect(s.source).toBe("fallback");
   });
