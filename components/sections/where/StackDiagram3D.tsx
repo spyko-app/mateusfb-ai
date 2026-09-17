@@ -32,7 +32,8 @@ function useNaturalHeight<T extends HTMLElement>() {
  *  extrusões a 45° nos cantos, miolo entrando pela esquerda, integrações em cascata. Estado = stackState(p). */
 export function StackDiagram3D({ progress, labels }: { progress: MotionValue<number>; labels: Labels }) {
   const state = useTransform(progress, stackState);
-  const transform = useTransform(state, (s) => `skewY(${s.skewY}deg) scale(${s.scale})`);
+  // --dscale (CSS) escala o diagrama inteiro por breakpoint (cresce em ≥1536)
+  const transform = useTransform(state, (s) => `skewY(${s.skewY}deg) scale(calc(var(--dscale, 1) * ${s.scale}))`);
   const you = useTransform(state, (s) => s.you);
   const agents = useTransform(state, (s) => s.agents);
   const kits = useTransform(state, (s) => s.kits);
@@ -52,9 +53,9 @@ export function StackDiagram3D({ progress, labels }: { progress: MotionValue<num
   const intMargin = useTransform(state, (s) => -GAP * (1 - s.integrations.opacity));
 
   return (
-    <div className="sticky top-0 hidden h-screen w-full items-center justify-end lg:flex" data-stack="3d">
+    <div className="sticky top-0 hidden h-screen w-full items-center justify-center lg:flex lg:[--dscale:1] 2xl:[--dscale:1.15]" data-stack="3d">
       <motion.div
-        className="flex w-full max-w-[442px] origin-center flex-col gap-[10px] [container-type:inline-size]"
+        className="flex w-full max-w-[560px] origin-center flex-col gap-[10px] [container-type:inline-size]"
         style={{ transform }}
       >
         <StackLayer state={you}>

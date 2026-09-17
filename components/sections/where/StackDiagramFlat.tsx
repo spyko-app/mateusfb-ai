@@ -10,7 +10,7 @@ type Labels = Messages["where"]["layers"];
 export function StackDiagramFlat({ labels, className = "" }: { labels: Labels; className?: string }) {
   return (
     <div className={`where-flat flex min-h-[min(720px,100svh)] w-full items-center ${className}`} data-stack="flat">
-      <div className="flex w-full max-w-[442px] flex-col gap-[10px] [container-type:inline-size]">
+      <div className="flex w-full max-w-[560px] flex-col gap-[10px] [container-type:inline-size]">
         <LayerCard title={labels.you.title} body={labels.you.body} />
         <div className="where-flat-grid grid grid-cols-[minmax(0,1fr)_154px] gap-[10px]">
           <div className="flex flex-col gap-[10px]">
