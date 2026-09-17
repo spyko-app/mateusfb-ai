@@ -1,6 +1,6 @@
 "use client";
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
-import { MARK_GEOMETRY, rad, satellitePoint } from "./Mark";
+import { MARK_GEOMETRY } from "./Mark";
 
 /** Palco 87×70 (proporção do spec). A marca (32×32) é centrada e escalada por `scale`. */
 const STAGE = { w: 87, h: 70 };
@@ -8,23 +8,18 @@ const HOLD_MS = 600;
 
 type Dot = { x: number; y: number; r: number };
 
-/** 7 pontos: núcleo → 3 pontos maiores; órbita → 3 amostras; satélite → 1. Coordenadas no viewBox 32×32. */
+/** 12 pontos: os 4 vértices de cada um dos 3 losangos. Os do plano de cima (sólido) são maiores. Coordenadas no viewBox 32×32. */
 export function markDots(g = MARK_GEOMETRY): Dot[] {
-  const { core, orbit } = g;
-  const coreDots: Dot[] = [0, 120, 240].map((deg) => ({
-    x: core.cx + core.r * 0.4 * Math.cos(rad(deg - 90)),
-    y: core.cy + core.r * 0.4 * Math.sin(rad(deg - 90)),
-    r: core.r * 0.65,
-  }));
-  const arcStart = orbit.startDeg + orbit.gapDeg;
-  const arcLen = 360 - orbit.gapDeg;
-  const orbitDots: Dot[] = [0.15, 0.5, 0.85].map((t) => ({
-    x: orbit.cx + orbit.r * Math.cos(rad(arcStart + arcLen * t)),
-    y: orbit.cy + orbit.r * Math.sin(rad(arcStart + arcLen * t)),
-    r: orbit.strokeWidth * 0.9,
-  }));
-  const s = satellitePoint(g);
-  return [...coreDots, ...orbitDots, { x: s.x, y: s.y, r: g.satellite.r }];
+  const { planes, cx, w, h, strokeWidth } = g;
+  return planes.flatMap(({ cy }, i) => {
+    const r = i === 0 ? strokeWidth * 1.4 : strokeWidth * 0.9;
+    return [
+      { x: cx, y: cy - h, r },
+      { x: cx + w, y: cy, r },
+      { x: cx, y: cy + h, r },
+      { x: cx - w, y: cy, r },
+    ];
+  });
 }
 
 export function ShufflingMark({ size = 64, className = "" }: { size?: number; className?: string }) {

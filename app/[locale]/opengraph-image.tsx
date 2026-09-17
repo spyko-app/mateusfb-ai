@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { getMessages, isLocale, locales } from "@/lib/i18n";
-import { MARK_GEOMETRY, orbitPath, satellitePoint } from "@/components/brand/Mark";
+import { MARK_GEOMETRY, planePath } from "@/components/brand/Mark";
 
 export const alt = "mateusfb.ai";
 export const size = { width: 1200, height: 630 };
@@ -25,8 +25,8 @@ export default async function OpengraphImage({ params }: { params: Promise<{ loc
     medium && { name: "Geist", data: medium, weight: 500 as const, style: "normal" as const },
     regular && { name: "Geist", data: regular, weight: 400 as const, style: "normal" as const },
   ].filter(Boolean) as { name: string; data: Buffer; weight: 400 | 500; style: "normal" }[];
-  const { core, orbit, satellite } = MARK_GEOMETRY;
-  const s = satellitePoint();
+  const { planes, cx, w, h, strokeWidth } = MARK_GEOMETRY;
+  const [top, mid, bottom] = planes;
   const MARK = 64;
 
   return new ImageResponse(
@@ -47,9 +47,9 @@ export default async function OpengraphImage({ params }: { params: Promise<{ loc
         <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
           {/* Inline mark: duplica Mark.tsx com #fff explícito pois Satori/ImageResponse não suporta currentColor. */}
           <svg width={MARK} height={MARK} viewBox="0 0 32 32" fill="none">
-            <circle cx={core.cx} cy={core.cy} r={core.r} fill="#fff" />
-            <path d={orbitPath(orbit)} stroke="#fff" strokeWidth={orbit.strokeWidth} strokeLinecap="round" />
-            <circle cx={s.x} cy={s.y} r={satellite.r} fill="#fff" />
+            <path d={planePath(cx, bottom.cy, w, h)} stroke="#fff" strokeWidth={strokeWidth} strokeLinejoin="round" fill="none" />
+            <path d={planePath(cx, mid.cy, w, h)} stroke="#fff" strokeWidth={strokeWidth} strokeLinejoin="round" fill="none" />
+            <path d={planePath(cx, top.cy, w, h)} fill="#fff" />
           </svg>
           <div style={{ display: "flex", alignItems: "baseline", fontSize: 64, fontWeight: 500, letterSpacing: "-0.01em" }}>
             mateusfb

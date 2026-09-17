@@ -1,30 +1,23 @@
-/** Marca mateusfb.ai — núcleo + órbita aberta + satélite. Variante B (docs/brand/README.md). */
+/** Marca mateusfb.ai — pilha isométrica: 3 planos quadrados (losangos 30°), topo sólido, dois de baixo em contorno. Variante A (docs/brand/README.md). */
 export const MARK_GEOMETRY = {
-  core: { cx: 16, cy: 16, r: 4.5 },
-  orbit: { cx: 16, cy: 16, r: 12.5, strokeWidth: 1.75, gapDeg: 110, startDeg: 300 },
-  satellite: { angleDeg: 120, r: 2.75 },
+  planes: [{ cy: 10.5 }, { cy: 16 }, { cy: 21.5 }],
+  cx: 16,
+  w: 10,
+  h: 5,
+  strokeWidth: 1.5,
+  sideEdges: false,
 } as const;
 
-export const rad = (d: number) => (d * Math.PI) / 180;
-
-export function orbitPath(g: typeof MARK_GEOMETRY.orbit = MARK_GEOMETRY.orbit) {
-  const a0 = rad(g.startDeg + g.gapDeg);
-  const a1 = rad(g.startDeg + 360);
-  const p = (a: number) => `${(g.cx + g.r * Math.cos(a)).toFixed(3)} ${(g.cy + g.r * Math.sin(a)).toFixed(3)}`;
-  const large = 360 - g.gapDeg > 180 ? 1 : 0;
-  return `M ${p(a0)} A ${g.r} ${g.r} 0 ${large} 1 ${p(a1)}`;
-}
-
-export function satellitePoint(g = MARK_GEOMETRY) {
-  const a = rad(g.satellite.angleDeg);
-  return { x: g.orbit.cx + g.orbit.r * Math.cos(a), y: g.orbit.cy + g.orbit.r * Math.sin(a) };
+/** Losango isométrico de um plano quadrado centrado em (cx, cy). */
+export function planePath(cx: number, cy: number, w: number, h: number): string {
+  return `M ${cx} ${cy - h} L ${cx + w} ${cy} L ${cx} ${cy + h} L ${cx - w} ${cy} Z`;
 }
 
 export type MarkProps = { size?: number; animated?: boolean; className?: string; title?: string };
 
 export function Mark({ size = 16, animated = false, className = "", title }: MarkProps) {
-  const { core, orbit, satellite } = MARK_GEOMETRY;
-  const s = satellitePoint();
+  const { planes, cx, w, h, strokeWidth } = MARK_GEOMETRY;
+  const [top, mid, bottom] = planes;
   return (
     <svg
       width={size}
@@ -36,11 +29,13 @@ export function Mark({ size = 16, animated = false, className = "", title }: Mar
       aria-hidden={title ? undefined : true}
     >
       {title && <title>{title}</title>}
-      <circle cx={core.cx} cy={core.cy} r={core.r} fill="currentColor" />
-      <path d={orbitPath(orbit)} stroke="currentColor" strokeWidth={orbit.strokeWidth} strokeLinecap="round" />
-      <g style={animated ? { transformOrigin: "16px 16px", animation: "mfb-orbit 8s linear infinite" } : undefined}>
-        <circle cx={s.x.toFixed(3)} cy={s.y.toFixed(3)} r={satellite.r} fill="currentColor" />
-      </g>
+      <path d={planePath(cx, bottom.cy, w, h)} stroke="currentColor" strokeWidth={strokeWidth} strokeLinejoin="round" />
+      <path d={planePath(cx, mid.cy, w, h)} stroke="currentColor" strokeWidth={strokeWidth} strokeLinejoin="round" />
+      <path
+        d={planePath(cx, top.cy, w, h)}
+        fill="currentColor"
+        style={animated ? { animation: "mfb-stack 8s ease-in-out infinite" } : undefined}
+      />
     </svg>
   );
 }
