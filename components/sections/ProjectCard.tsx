@@ -26,14 +26,16 @@ export function ProjectCard({
           url ? "cursor-pointer hover:bg-fg/[0.04] hover:border-fg/40" : ""
         }`}
       >
-        <div className="flex items-center justify-between gap-3">
+        <div className="h-6 flex items-center justify-between gap-3">
           <Eyebrow>{stats.language ?? project.language}</Eyebrow>
           {building ? (
             <span className="text-eyebrow bg-fg text-bg px-2 py-1">{m.projects.building}</span>
           ) : null}
         </div>
         <div>
-          <h3 className="text-pullquote mt-6">{project.name}</h3>
+          <h3 className="text-pullquote xl:text-[clamp(22px,1.9vw,30px)] mt-6 h-[1.1em] leading-[1.1] whitespace-nowrap overflow-hidden text-ellipsis">
+            {project.name}
+          </h3>
           <p className="text-caption text-fg/60 mt-3">{project.description[locale]}</p>
         </div>
         <div className="mt-6 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-eyebrow text-fg/60">
