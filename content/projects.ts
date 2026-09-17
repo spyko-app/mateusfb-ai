@@ -56,6 +56,8 @@ export const projects: Project[] = [
   {
     slug: "vibe100coding-kit",
     name: "vibe100coding kit",
+    owner: "spyko-app",
+    repo: "vibe100coding-kit",
     language: "Markdown",
     status: "building",
     description: {

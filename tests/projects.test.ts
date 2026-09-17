@@ -18,15 +18,11 @@ describe("projects", () => {
     }
   });
 
-  it("repoUrl is null only for building projects without repo", () => {
+  it("all 4 projects have a GitHub repo url", () => {
     for (const p of projects) {
-      const url = repoUrl(p);
-      if (p.owner && p.repo) {
-        expect(url).toBe(`https://github.com/${p.owner}/${p.repo}`);
-      } else {
-        expect(url).toBeNull();
-        expect(p.status).toBe("building");
-      }
+      expect(p.owner).toBeTruthy();
+      expect(p.repo).toBeTruthy();
+      expect(repoUrl(p)).toBe(`https://github.com/${p.owner}/${p.repo}`);
     }
   });
 });
