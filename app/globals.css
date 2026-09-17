@@ -73,3 +73,12 @@
 }
 
 @keyframes mfb-orbit { to { transform: rotate(360deg); } }
+
+/* Seção 02 — pilha plana (mobile / reduced motion): container queries */
+@container (max-width: 560px) {
+  .where-flat .where-integrations { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@container (max-width: 500px) {
+  .where-flat .where-flat-grid { grid-template-columns: minmax(0, 1fr); }
+  .where-flat .where-flat-glyph { aspect-ratio: auto; min-height: 128px; }
+}
