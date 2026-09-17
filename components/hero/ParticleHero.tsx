@@ -2,19 +2,21 @@
 
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
+import { GLOW_URL, createPointsMaterial, createSprite, loadImage, sampleImage } from "./particles";
 
 /**
  * Hero como campo de partículas (pipeline do xmcp.dev): uma imagem estática já ditherizada
  * (`/hero/scene.png`, preto com pontos brancos) é lida pixel a pixel e cada ponto branco vira um
  * `THREE.Points` com sprite radial suave, blending aditivo e tamanho minúsculo. A animação é só
- * cintilação por partícula (ruído no tempo), respiração/rotação lenta do campo inteiro e parallax
- * do mouse com profundidade por brilho local. Nada de vídeo, nada de cena 3D em tempo real.
+ * cintilação por partícula (ruído no tempo), respiração lenta de brilho e um **campo de força local
+ * do mouse**: só as partículas perto do cursor são empurradas (com um leve redemoinho) e voltam com
+ * inércia, deixando um rastro que se apaga — nada de parallax global (medido no xmcp: deslocamento
+ * global = 0,0; a diferença entre frames fica ao redor do cursor e de onde ele acabou de passar).
  *
  * Pra trocar a cena: substitua `public/hero/scene.png` por outro PNG preto/branco (qualquer tamanho).
  */
 
 const SCENE_URL = "/hero/scene.png";
-const GLOW_URL = "/hero/glow.png";
 const MAX_W = 720;
 const MAX_H = 500;
 const ASPECT = MAX_W / MAX_H;
@@ -23,123 +25,42 @@ const MAX_POINTS = 60_000;
 const REF_SCALE = 720 / 850;
 /** ponto base em px CSS (×dpr no shader; o sprite radial só acende no miolo → ~1,5 px visíveis = delicado) */
 const POINT_BASE = 2.2;
-/** parallax alvo (px CSS) = (mouse − 0,5)·(−18, −12); lerp 0,06 */
-const PARALLAX = { x: -18, y: -12 } as const;
-const LERP = 0.06;
-const BREATH_PX = 3;
+/** campo de força do cursor (px CSS): raio, deslocamento máximo, ângulo do redemoinho */
+const FORCE_RADIUS = 110;
+const FORCE_STRENGTH = 26;
+const SWIRL_RAD = (35 * Math.PI) / 180;
+/** inércia: aproxima rápido do alvo, solta devagar (0,08/frame ≈ rastro de ~0,5 s) */
+const LERP_IN = 0.18;
+const LERP_OUT = 0.08;
+/** respiração: pulso lento de brilho/tamanho do campo inteiro (sem mover posição) */
 const BREATH_PERIOD_S = 6;
-const ROT_DEG = 0.6;
-const ROT_PERIOD_S = 14;
+const BREATH_AMT = 0.08;
 
 const vert = /* glsl */ `
   attribute float aSeed;
   attribute float aDepth;
+  attribute vec2 aOffset;
   uniform float uTime;
   uniform float uSize;
-  uniform vec2 uOffset;
   uniform float uStatic;
+  uniform float uBreath;
+  uniform vec2 uMouse;
+  uniform float uRadius;
   varying float vAlpha;
   void main() {
     float speed = 1.2 + aSeed * 2.6;
     float tw = 0.55 + 0.45 * sin(uTime * speed + aSeed * 6.2831853);
     tw = mix(tw, 0.85, uStatic);
-    vAlpha = tw * (0.55 + 0.45 * aDepth);
-    // parallax por profundidade: pontos de núcleo (mais brilho) deslocam mais → sensação 3D
-    vec3 p = position + vec3(uOffset * (0.35 + 0.95 * aDepth), 0.0);
+    vec3 p = position + vec3(aOffset, 0.0);
+    // o cursor "acende" a região: dentro do raio, +30% de brilho e tamanho
+    float lit = 1.0 - smoothstep(0.0, uRadius, distance(p.xy, uMouse));
+    float boost = 1.0 + 0.3 * lit;
+    vAlpha = tw * (0.55 + 0.45 * aDepth) * uBreath * boost;
     vec4 mv = modelViewMatrix * vec4(p, 1.0);
     gl_Position = projectionMatrix * mv;
-    gl_PointSize = uSize * (0.8 + 0.5 * tw + 0.25 * aDepth);
+    gl_PointSize = uSize * (0.8 + 0.5 * tw + 0.25 * aDepth) * uBreath * boost;
   }
 `;
-
-const frag = /* glsl */ `
-  precision mediump float;
-  uniform sampler2D uSprite;
-  uniform float uHasSprite;
-  varying float vAlpha;
-  void main() {
-    vec2 uv = gl_PointCoord;
-    float d = length(uv - 0.5) * 2.0;
-    float proc = exp(-d * d * 5.0);
-    float sp = texture2D(uSprite, uv).a;
-    float a = min(1.0, mix(proc, sp, uHasSprite) * vAlpha * 1.6);
-    if (a < 0.004) discard;
-    gl_FragColor = vec4(vec3(a), a);
-  }
-`;
-
-type Field = { positions: Float32Array; seeds: Float32Array; depths: Float32Array; w: number; h: number };
-
-/** Lê os pixels brancos da cena: posição em unidades da cena (origem no centro, y pra cima), semente e profundidade (densidade local). */
-function sampleImage(img: HTMLImageElement): Field {
-  const w = img.naturalWidth;
-  const h = img.naturalHeight;
-  const cv = document.createElement("canvas");
-  cv.width = w;
-  cv.height = h;
-  const ctx = cv.getContext("2d", { willReadFrequently: true });
-  if (!ctx) throw new Error("2d context");
-  ctx.drawImage(img, 0, 0);
-  const { data } = ctx.getImageData(0, 0, w, h);
-  const mask = new Uint8Array(w * h);
-  let total = 0;
-  for (let i = 0; i < w * h; i++) {
-    if (data[i * 4] > 128) {
-      mask[i] = 1;
-      total++;
-    }
-  }
-  // densidade local (célula 8×8) → profundidade: núcleo denso = mais perto, halo esparso = mais longe
-  const cell = 8;
-  const gw = Math.ceil(w / cell);
-  const gh = Math.ceil(h / cell);
-  const grid = new Float32Array(gw * gh);
-  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (mask[y * w + x]) grid[((y / cell) | 0) * gw + ((x / cell) | 0)]++;
-  let gmax = 1;
-  for (let i = 0; i < grid.length; i++) gmax = Math.max(gmax, grid[i]);
-
-  const keep = Math.min(1, MAX_POINTS / Math.max(total, 1));
-  let seed = 1234567;
-  const rnd = () => {
-    seed = (seed * 1664525 + 1013904223) >>> 0;
-    return seed / 4294967296;
-  };
-  const positions: number[] = [];
-  const seeds: number[] = [];
-  const depths: number[] = [];
-  for (let y = 0; y < h; y++) {
-    for (let x = 0; x < w; x++) {
-      if (!mask[y * w + x] || rnd() > keep) continue;
-      const dens = Math.sqrt(grid[((y / cell) | 0) * gw + ((x / cell) | 0)] / gmax);
-      const s = rnd();
-      positions.push(x - w / 2 + (rnd() - 0.5) * 0.6, h / 2 - y + (rnd() - 0.5) * 0.6, (dens - 0.5) * 20);
-      seeds.push(s);
-      depths.push(Math.min(1, dens * 0.8 + s * 0.2));
-    }
-  }
-  // embaralha (Fisher-Yates) → `setDrawRange` com um prefixo = subamostra uniforme em telas menores
-  const n = seeds.length;
-  for (let i = n - 1; i > 0; i--) {
-    const j = (rnd() * (i + 1)) | 0;
-    for (let k = 0; k < 3; k++) {
-      const t = positions[i * 3 + k];
-      positions[i * 3 + k] = positions[j * 3 + k];
-      positions[j * 3 + k] = t;
-    }
-    [seeds[i], seeds[j]] = [seeds[j], seeds[i]];
-    [depths[i], depths[j]] = [depths[j], depths[i]];
-  }
-  return { positions: new Float32Array(positions), seeds: new Float32Array(seeds), depths: new Float32Array(depths), w, h };
-}
-
-function loadImage(url: string): Promise<HTMLImageElement> {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => resolve(img);
-    img.onerror = () => reject(new Error(`falha ao carregar ${url}`));
-    img.src = url;
-  });
-}
 
 export type ParticleHeroProps = { reduced?: boolean };
 
@@ -159,52 +80,48 @@ export default function ParticleHero({ reduced = false }: ParticleHeroProps) {
     (async () => {
       const [img, glowImg] = await Promise.all([loadImage(SCENE_URL), loadImage(GLOW_URL).catch(() => null)]);
       if (disposed) return;
-      const field = sampleImage(img);
+      const field = sampleImage(img, MAX_POINTS);
+      const count = field.seeds.length;
 
       const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: false, powerPreference: "low-power" });
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       renderer.setPixelRatio(dpr);
       renderer.setClearColor(0x000000, 1);
       host.appendChild(renderer.domElement);
+      const canvas = renderer.domElement;
 
       const scene = new THREE.Scene();
       const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, -100, 100);
       camera.position.z = 10;
 
+      const offsets = new Float32Array(count * 2);
+      const offsetAttr = new THREE.BufferAttribute(offsets, 2);
+      offsetAttr.setUsage(THREE.DynamicDrawUsage);
       const geo = new THREE.BufferGeometry();
       geo.setAttribute("position", new THREE.BufferAttribute(field.positions, 3));
       geo.setAttribute("aSeed", new THREE.BufferAttribute(field.seeds, 1));
       geo.setAttribute("aDepth", new THREE.BufferAttribute(field.depths, 1));
+      geo.setAttribute("aOffset", offsetAttr);
 
-      const sprite = glowImg ? new THREE.Texture(glowImg) : new THREE.Texture();
-      if (glowImg) {
-        sprite.minFilter = THREE.LinearFilter;
-        sprite.magFilter = THREE.LinearFilter;
-        sprite.needsUpdate = true;
-      }
-      const mat = new THREE.ShaderMaterial({
+      const { sprite, hasSprite } = createSprite(glowImg);
+      const mat = createPointsMaterial({
         vertexShader: vert,
-        fragmentShader: frag,
+        sprite,
+        hasSprite,
+        size: POINT_BASE * dpr,
         uniforms: {
-          uTime: { value: 0 },
-          uSize: { value: POINT_BASE * dpr },
-          uOffset: { value: new THREE.Vector2(0, 0) },
           uStatic: { value: reducedRef.current ? 1 : 0 },
-          uSprite: { value: sprite },
-          uHasSprite: { value: glowImg ? 1 : 0 },
+          uBreath: { value: 1 },
+          uMouse: { value: new THREE.Vector2(1e6, 1e6) },
+          uRadius: { value: 1 },
         },
-        transparent: true,
-        depthTest: false,
-        depthWrite: false,
-        blending: THREE.AdditiveBlending,
       });
       const points = new THREE.Points(geo, mat);
-      const world = new THREE.Group();
-      world.add(points);
-      scene.add(world);
+      scene.add(points);
 
       /** px CSS por unidade da cena (enquadra com letterbox preto, mantendo o aspecto) */
       let scale = 1;
+      let drawCount = count;
       const resize = () => {
         const w = Math.min(MAX_W, Math.max(1, host.clientWidth));
         const h = Math.round(w / ASPECT);
@@ -219,21 +136,84 @@ export default function ParticleHero({ reduced = false }: ParticleHeroProps) {
         camera.updateProjectionMatrix();
         // ponto = tamanho fixo em px CSS (não escala com a cena); em telas menores encolhe um pouco
         mat.uniforms.uSize.value = POINT_BASE * dpr * Math.max(0.85, Math.min(1, w / MAX_W));
+        mat.uniforms.uRadius.value = FORCE_RADIUS / scale;
         // densidade constante em px CSS: em telas menores desenha só um prefixo (embaralhado) dos pontos
         const frac = Math.min(1, Math.sqrt(scale / REF_SCALE));
-        geo.setDrawRange(0, Math.max(1, Math.round(field.seeds.length * frac)));
+        drawCount = Math.max(1, Math.round(count * frac));
+        geo.setDrawRange(0, drawCount);
       };
       resize();
       const ro = new ResizeObserver(resize);
       ro.observe(host);
 
-      const mouse = { x: 0.5, y: 0.5 };
-      const par = { x: 0, y: 0 };
+      // cursor em unidades da cena (origem no centro, y pra cima); `active=false` fora do canvas → tudo volta
+      const mouse = { x: 0, y: 0, active: false };
+      const setPointer = (clientX: number, clientY: number) => {
+        const r = canvas.getBoundingClientRect();
+        const inside = clientX >= r.left && clientX <= r.right && clientY >= r.top && clientY <= r.bottom;
+        mouse.active = inside;
+        if (!inside) return;
+        mouse.x = (clientX - r.left - r.width / 2) / scale;
+        mouse.y = -(clientY - r.top - r.height / 2) / scale;
+      };
       const onMove = (e: MouseEvent) => {
-        mouse.x = e.clientX / window.innerWidth;
-        mouse.y = e.clientY / window.innerHeight;
+        setPointer(e.clientX, e.clientY);
+        schedule();
+      };
+      const onTouch = (e: TouchEvent) => {
+        const t = e.touches[0];
+        if (t) setPointer(t.clientX, t.clientY);
+        else mouse.active = false;
+        schedule();
+      };
+      const onLeave = () => {
+        mouse.active = false;
+        schedule();
       };
       window.addEventListener("mousemove", onMove, { passive: true });
+      window.addEventListener("touchmove", onTouch, { passive: true });
+      window.addEventListener("touchend", onLeave, { passive: true });
+      document.addEventListener("mouseleave", onLeave);
+
+      /** energia residual do campo (soma dos deslocamentos) → sabemos quando parar de atualizar o buffer */
+      let energy = 0;
+      const cosS = Math.cos(SWIRL_RAD);
+      const sinS = Math.sin(SWIRL_RAD);
+      const updateForces = (active: boolean) => {
+        const R = FORCE_RADIUS / scale;
+        const S = FORCE_STRENGTH / scale;
+        const pos = field.positions;
+        let sum = 0;
+        for (let i = 0; i < drawCount; i++) {
+          let tx = 0;
+          let ty = 0;
+          if (active) {
+            const dx = pos[i * 3] - mouse.x;
+            const dy = pos[i * 3 + 1] - mouse.y;
+            const d = Math.sqrt(dx * dx + dy * dy);
+            if (d < R) {
+              const u = d / R;
+              const f = 1 - u * u * (3 - 2 * u); // smoothstep(R, 0, d)
+              const inv = d > 1e-4 ? 1 / d : 0;
+              const nx = dx * inv;
+              const ny = dy * inv;
+              // empurra pra fora + redemoinho (direção girada 35°)
+              tx = (nx * cosS - ny * sinS) * S * f;
+              ty = (nx * sinS + ny * cosS) * S * f;
+            }
+          }
+          const ox = offsets[i * 2];
+          const oy = offsets[i * 2 + 1];
+          const k = tx * tx + ty * ty > ox * ox + oy * oy ? LERP_IN : LERP_OUT;
+          const nx = ox + (tx - ox) * k;
+          const ny = oy + (ty - oy) * k;
+          offsets[i * 2] = nx;
+          offsets[i * 2 + 1] = ny;
+          sum += Math.abs(nx) + Math.abs(ny);
+        }
+        energy = sum * scale;
+        offsetAttr.needsUpdate = true;
+      };
 
       let visible = true;
       let raf = 0;
@@ -245,24 +225,15 @@ export default function ParticleHero({ reduced = false }: ParticleHeroProps) {
         const isStatic = reducedRef.current;
         mat.uniforms.uStatic.value = isStatic ? 1 : 0;
         mat.uniforms.uTime.value = t;
+        mat.uniforms.uBreath.value = isStatic ? 1 : 1 + Math.sin((t / BREATH_PERIOD_S) * Math.PI * 2) * BREATH_AMT;
 
-        // parallax (px CSS, oposto ao cursor) → unidades da cena; y da tela pra baixo, da cena pra cima
-        const tx = (mouse.x - 0.5) * PARALLAX.x;
-        const ty = (mouse.y - 0.5) * PARALLAX.y;
-        par.x += (tx - par.x) * LERP;
-        par.y += (ty - par.y) * LERP;
-        mat.uniforms.uOffset.value.set(par.x / scale, -par.y / scale);
+        const active = mouse.active && !isStatic;
+        if (active) mat.uniforms.uMouse.value.set(mouse.x, mouse.y);
+        else mat.uniforms.uMouse.value.set(1e6, 1e6);
+        if (active || energy > 0.5) updateForces(active);
 
-        if (isStatic) {
-          world.position.set(0, 0, 0);
-          world.rotation.z = 0;
-        } else {
-          const b = (t / BREATH_PERIOD_S) * Math.PI * 2;
-          world.position.set((Math.sin(b) * BREATH_PX) / scale, (Math.cos(b * 0.8) * BREATH_PX * 0.7) / scale, 0);
-          world.rotation.z = Math.sin((t / ROT_PERIOD_S) * Math.PI * 2) * ((ROT_DEG * Math.PI) / 180);
-        }
         renderer.render(scene, camera);
-        const settled = isStatic && Math.abs(par.x - tx) < 0.05 && Math.abs(par.y - ty) < 0.05;
+        const settled = isStatic && energy <= 0.5;
         if (visible && !document.hidden && !settled) raf = requestAnimationFrame(frame);
       };
       const schedule = () => {
@@ -275,8 +246,6 @@ export default function ParticleHero({ reduced = false }: ParticleHeroProps) {
       io.observe(host);
       const onVis = () => schedule();
       document.addEventListener("visibilitychange", onVis);
-      const onMoveWake = () => schedule();
-      window.addEventListener("mousemove", onMoveWake, { passive: true });
       schedule();
 
       cleanup = () => {
@@ -285,7 +254,9 @@ export default function ParticleHero({ reduced = false }: ParticleHeroProps) {
         io.disconnect();
         document.removeEventListener("visibilitychange", onVis);
         window.removeEventListener("mousemove", onMove);
-        window.removeEventListener("mousemove", onMoveWake);
+        window.removeEventListener("touchmove", onTouch);
+        window.removeEventListener("touchend", onLeave);
+        document.removeEventListener("mouseleave", onLeave);
         geo.dispose();
         mat.dispose();
         sprite.dispose();
