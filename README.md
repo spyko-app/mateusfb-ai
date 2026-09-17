@@ -1,5 +1,7 @@
 # mateusfb.ai
 
+**Live:** https://mateusfb-ai.vercel.app · **Repo:** https://github.com/spyko-app/mateusfb-ai
+
 Personal portfolio and blog for Mateus Ferreira Bandeira. Black-and-white,
 Next.js (App Router) + Tailwind v4, Geist typeface, MDX content.
 
