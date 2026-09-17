@@ -9,15 +9,23 @@ const MAX_H = 500;
 const ASPECT = MAX_W / MAX_H;
 /** 1 px por partícula, resolução nativa (DPR 1) — como o xmcp.dev */
 const PIXEL = 1;
-const GAMMA = 1.4;
+/** exposição do tone mapping: face iluminada do topo satura (≥85% de densidade), sombra fica em meio-tom */
+const EXPOSURE = 1.9;
 const SLAB = { size: 2.2, thick: 0.1, gap: 0.9 } as const;
+/** arestas com área (barras finas) — linhas de 1px não pegam luz e somem no dither */
+const EDGE = 0.03;
 const TILT_X = 0.6;
 /** rotação bem lenta (≤ 0.0015 rad/frame) */
 const SPIN_Y = 0.0012;
-/** parallax: deslocamento da cena até ±12px e inclinação até ±0.06 rad, com lerp 0.05 */
-const PARALLAX_PX = 12;
-const PARALLAX_TILT = 0.06;
-const LERP = 0.05;
+/** parallax: deslocamento da cena até ±14px e inclinação até ±0.10 rad, com lerp 0.08 */
+const PARALLAX_PX = 14;
+const PARALLAX_TILT = 0.1;
+const LERP = 0.08;
+/** a luz principal segue o cursor (±1.5 unidades) → as faces iluminadas mudam com o mouse */
+const KEY_FOLLOW = 1.5;
+const KEY_BASE = new THREE.Vector3(-2.4, 3.2, 2.6);
+/** "spotlight" no shader: ×1.25 num raio de 160px do cursor */
+const SPOT_RADIUS = 160;
 const BREATH_AMP = 0.08;
 const BREATH_PERIOD = 4000;
 const FOV = 35;
@@ -27,10 +35,34 @@ const FIT_MARGIN = 0.7;
 function buildStack(): { group: THREE.Group; top: THREE.Mesh; dispose: () => void } {
   const group = new THREE.Group();
   const box = new THREE.BoxGeometry(SLAB.size, SLAB.thick, SLAB.size);
-  const edges = new THREE.EdgesGeometry(box);
-  const white = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 0.14, roughness: 0.6 });
-  const gray = new THREE.MeshStandardMaterial({ color: 0xa8a8a8, emissive: 0x0c0c0c, roughness: 0.6 });
-  const line = new THREE.LineBasicMaterial({ color: 0x777777, transparent: true, opacity: 0.6 });
+  const white = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 0.35, roughness: 0.7 });
+  const gray = new THREE.MeshStandardMaterial({ color: 0x5c5c5c, emissive: 0x080808, roughness: 0.6 });
+  const edgeMat = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 0.22, roughness: 0.4 });
+  // 12 arestas como barras finas (BoxGeometry) — têm área, pegam luz e viram linhas pontilhadas nítidas
+  const half = SLAB.size / 2;
+  const halfT = SLAB.thick / 2;
+  const barX = new THREE.BoxGeometry(SLAB.size + EDGE, EDGE, EDGE);
+  const barZ = new THREE.BoxGeometry(EDGE, EDGE, SLAB.size + EDGE);
+  const barY = new THREE.BoxGeometry(EDGE, SLAB.thick + EDGE, EDGE);
+  const addEdges = (parent: THREE.Object3D) => {
+    for (const sy of [-1, 1]) {
+      for (const sz of [-1, 1]) {
+        const m = new THREE.Mesh(barX, edgeMat);
+        m.position.set(0, sy * halfT, sz * half);
+        parent.add(m);
+      }
+      for (const sx of [-1, 1]) {
+        const m = new THREE.Mesh(barZ, edgeMat);
+        m.position.set(sx * half, sy * halfT, 0);
+        parent.add(m);
+      }
+    }
+    for (const sx of [-1, 1]) for (const sz of [-1, 1]) {
+      const m = new THREE.Mesh(barY, edgeMat);
+      m.position.set(sx * half, 0, sz * half);
+      parent.add(m);
+    }
+  };
 
   const top = new THREE.Mesh(box, white);
   top.position.y = SLAB.gap;
@@ -39,9 +71,8 @@ function buildStack(): { group: THREE.Group; top: THREE.Mesh; dispose: () => voi
   for (const y of [0, -SLAB.gap]) {
     const fill = new THREE.Mesh(box, gray);
     fill.position.y = y;
-    const frame = new THREE.LineSegments(edges, line);
-    frame.position.y = y;
-    group.add(fill, frame);
+    addEdges(fill);
+    group.add(fill);
   }
 
   group.position.y = -0.35;
@@ -49,10 +80,12 @@ function buildStack(): { group: THREE.Group; top: THREE.Mesh; dispose: () => voi
   group.rotation.y = Math.PI / 4;
   const dispose = () => {
     box.dispose();
-    edges.dispose();
+    barX.dispose();
+    barZ.dispose();
+    barY.dispose();
     white.dispose();
     gray.dispose();
-    line.dispose();
+    edgeMat.dispose();
   };
   return { group, top, dispose };
 }
@@ -72,15 +105,17 @@ export default function DitherCanvas() {
     host.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x000000, 0.12);
+    scene.fog = new THREE.FogExp2(0x000000, 0.06);
     const camera = new THREE.PerspectiveCamera(FOV, ASPECT, 0.1, 100);
 
-    // duas luzes pontuais com queda larga (decay 1) — iluminação volumétrica, sem silhueta dura
-    const keyLight = new THREE.PointLight(0xffffff, 8, 0, 1);
-    keyLight.position.set(-2.2, 2.8, 1.8);
-    const rimLight = new THREE.PointLight(0xffffff, 7, 0, 1);
-    rimLight.position.set(3.0, -1.0, 2.5);
-    scene.add(keyLight, rimLight, new THREE.AmbientLight(0xffffff, 0.12));
+    // key (frente, alto-esquerda, forte, queda larga) + fill suave da direita + rim por trás (arestas acendem)
+    const keyLight = new THREE.PointLight(0xffffff, 9, 0, 1);
+    keyLight.position.copy(KEY_BASE);
+    const fillLight = new THREE.PointLight(0xffffff, 3.5, 0, 1);
+    fillLight.position.set(3.2, 0.6, 2.4);
+    const rimLight = new THREE.PointLight(0xffffff, 9, 0, 1);
+    rimLight.position.set(1.2, 1.4, -3.4);
+    scene.add(keyLight, fillLight, rimLight, new THREE.AmbientLight(0xffffff, 0.1));
 
     // "mundo" que recebe o parallax (deslocamento + inclinação); a pilha vive dentro
     const world = new THREE.Group();
@@ -121,7 +156,9 @@ export default function DitherCanvas() {
         uRes: { value: new THREE.Vector2(1, 1) },
         uPixel: { value: PIXEL },
         uFrame: { value: 0 },
-        uGamma: { value: GAMMA },
+        uExposure: { value: EXPOSURE },
+        uMouse: { value: new THREE.Vector2(-9999, -9999) },
+        uSpotRadius: { value: SPOT_RADIUS },
       },
       depthTest: false,
       depthWrite: false,
@@ -151,10 +188,14 @@ export default function DitherCanvas() {
     const ro = new ResizeObserver(resize);
     ro.observe(host);
 
-    const mouse = { x: 0.5, y: 0.5 };
+    const mouse = { x: 0.5, y: 0.5, cx: -9999, cy: -9999 };
     const onMove = (e: MouseEvent) => {
       mouse.x = e.clientX / window.innerWidth;
       mouse.y = e.clientY / window.innerHeight;
+      // posição do cursor em px do canvas (origem embaixo-esquerda, como gl_FragCoord)
+      const r = renderer.domElement.getBoundingClientRect();
+      mouse.cx = e.clientX - r.left;
+      mouse.cy = r.bottom - e.clientY;
     };
     window.addEventListener("pointermove", onMove, { passive: true });
     window.addEventListener("mousemove", onMove, { passive: true });
@@ -173,6 +214,7 @@ export default function DitherCanvas() {
     let frameN = 0;
     // parallax (em px, eixo y da tela pra baixo) — a cena deriva no sentido OPOSTO ao cursor
     const par = { x: 0, y: 0 };
+    const spot = new THREE.Vector2(-9999, -9999);
     const t0 = performance.now();
 
     const frame = () => {
@@ -191,6 +233,14 @@ export default function DitherCanvas() {
       world.rotation.y = -(par.x / PARALLAX_PX) * PARALLAX_TILT;
       stack.group.rotation.y = spin;
       stack.top.position.y = SLAB.gap + Math.sin(((now - t0) / BREATH_PERIOD) * Math.PI * 2) * BREATH_AMP;
+
+      // luz principal acompanha o cursor (sentido do mouse) → faces iluminadas mudam
+      const kx = (mouse.x - 0.5) * 2 * KEY_FOLLOW;
+      const ky = -(mouse.y - 0.5) * 2 * KEY_FOLLOW;
+      keyLight.position.x += (KEY_BASE.x + kx - keyLight.position.x) * LERP;
+      keyLight.position.y += (KEY_BASE.y + ky - keyLight.position.y) * LERP;
+      if (mouse.cx > -9000) spot.lerp(new THREE.Vector2(mouse.cx, mouse.cy), LERP);
+      ditherMat.uniforms.uMouse.value.copy(spot);
 
       bgMat.uniforms.uOffset.value.set(par.x, -par.y);
       bgMat.uniforms.uTime.value = (now - t0) / 1000;
