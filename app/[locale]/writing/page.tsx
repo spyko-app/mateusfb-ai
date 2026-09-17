@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { isLocale, getMessages } from "@/lib/i18n";
 import { getPosts } from "@/lib/posts";
+import { alternatesFor } from "@/lib/site";
 import { Container, SectionHeader } from "@/components/ds";
 import { PostRow } from "@/components/sections/PostRow";
 
@@ -13,7 +14,7 @@ export async function generateMetadata({
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const m = getMessages(locale);
-  return { title: `${m.writing.title} — mateusfb.ai`, description: m.writing.body };
+  return { title: `${m.writing.title} — mateusfb.ai`, description: m.writing.body, alternates: alternatesFor(locale, "/writing") };
 }
 
 export default async function WritingPage({ params }: { params: Promise<{ locale: string }> }) {

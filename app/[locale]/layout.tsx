@@ -5,6 +5,7 @@ import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { isLocale, locales, getMessages, type Locale } from "@/lib/i18n";
 import { GlassFilter } from "@/components/ds";
+import { BASE_URL } from "@/lib/site";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { Nav } from "@/components/nav/Nav";
 import { Footer } from "@/components/sections/Footer";
@@ -19,9 +20,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return {
     title: m.meta.title,
     description: m.meta.description,
-    metadataBase: new URL("https://mateusfb-ai.vercel.app"),
-    alternates: { languages: { en: "/en", pt: "/pt" } },
-    openGraph: { title: m.meta.title, description: m.meta.description, locale },
+    metadataBase: new URL(BASE_URL),
+    openGraph: { title: m.meta.title, description: m.meta.description, locale: locale === "pt" ? "pt_BR" : "en_US" },
   };
 }
 

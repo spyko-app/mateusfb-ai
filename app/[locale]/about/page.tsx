@@ -2,6 +2,8 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { isLocale, getMessages } from "@/lib/i18n";
 import { Container, DashedCard, Button } from "@/components/ds";
+import { contactEmail, githubProfile } from "@/content/projects";
+import { alternatesFor } from "@/lib/site";
 
 const STACK = ["Swift/SwiftUI", "TypeScript/Next.js", "Python", "Claude Code", "Vercel", "macOS"];
 
@@ -13,7 +15,7 @@ export async function generateMetadata({
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const m = getMessages(locale);
-  return { title: `${m.about.title} — mateusfb.ai`, description: m.about.body };
+  return { title: `${m.about.title} — mateusfb.ai`, description: m.about.body, alternates: alternatesFor(locale, "/about") };
 }
 
 export default async function AboutPage({ params }: { params: Promise<{ locale: string }> }) {
@@ -40,10 +42,10 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
         <DashedCard className="flex flex-col gap-4 p-6">
           <h2 className="text-eyebrow text-fg/60">{m.about.contact}</h2>
           <div className="flex flex-wrap gap-3">
-            <Button variant="outline" href="mailto:hello@mateusfb.ai">
+            <Button variant="outline" href={`mailto:${contactEmail}`}>
               {m.cta.email}
             </Button>
-            <Button variant="outline" href="https://github.com/mateusfb">
+            <Button variant="outline" href={githubProfile}>
               {m.cta.github}
             </Button>
           </div>

@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { isLocale, getMessages, t, localePath, locales, type Locale } from "@/lib/i18n";
 import { getPost, getPosts, formatDate } from "@/lib/posts";
+import { alternatesFor } from "@/lib/site";
 import { Container, DashedCard } from "@/components/ds";
 import { mdxComponents } from "@/components/mdx/MdxComponents";
 
@@ -20,7 +21,7 @@ export async function generateMetadata({
   if (!isLocale(locale)) return {};
   const post = getPost(locale, slug);
   if (!post) return {};
-  return { title: `${post.title} — mateusfb.ai`, description: post.summary };
+  return { title: `${post.title} — mateusfb.ai`, description: post.summary, alternates: alternatesFor(locale, `/writing/${slug}`) };
 }
 
 export default async function PostPage({
