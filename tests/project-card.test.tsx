@@ -8,7 +8,7 @@ const building = projects.find((p) => p.slug === "vibe100coding-kit")!;
 
 describe("ProjectCard", () => {
   afterEach(cleanup);
-  it("shows name, language, stars and GitHub link", () => {
+  it("shows name, language, stars and links to the internal project page", () => {
     render(
       <ProjectCard
         project={webAi}
@@ -21,11 +21,11 @@ describe("ProjectCard", () => {
     expect(screen.getByText("TypeScript")).toBeInTheDocument();
     expect(screen.getByText(/12/)).toBeInTheDocument();
     const link = screen.getByRole("link");
-    expect(link).toHaveAttribute("href", "https://github.com/spyko-app/web.ai");
-    expect(link).toHaveAttribute("target", "_blank");
+    expect(link).toHaveAttribute("href", "/en/projects/web-ai");
+    expect(link).not.toHaveAttribute("target");
   });
 
-  it("shows In progress badge AND the GitHub link since the repo now exists", () => {
+  it("shows In progress badge and links to the project page", () => {
     render(
       <ProjectCard
         project={building}
@@ -36,6 +36,6 @@ describe("ProjectCard", () => {
     );
     expect(screen.getByText("In progress")).toBeInTheDocument();
     const link = screen.getByRole("link");
-    expect(link).toHaveAttribute("href", "https://github.com/spyko-app/vibe100coding-kit");
+    expect(link).toHaveAttribute("href", "/en/projects/vibe100coding-kit");
   });
 });

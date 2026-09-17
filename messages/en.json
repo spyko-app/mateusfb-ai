@@ -33,7 +33,8 @@
     "all": "All projects",
     "filterAll": "All",
     "filterShipped": "Shipped",
-    "filterBuilding": "Building"
+    "filterBuilding": "Building",
+    "view": "View project"
   },
   "where": {
     "num": "02",
@@ -121,5 +122,20 @@
     "title": "Not found",
     "body": "This page doesn't exist.",
     "home": "Go home"
+  },
+  "project": {
+    "features": "Features",
+    "featuresTitle": "What it does",
+    "featuresBody": "The pieces that make it worth opening, straight from the repository.",
+    "getStarted": "Get started",
+    "stepsTitle": "From zero to running",
+    "stepsBody": "Four steps, copied from the README.",
+    "back": "Back to projects",
+    "demo": "Demo",
+    "openRepo": "Open on GitHub",
+    "status": {
+      "shipped": "Shipped",
+      "building": "In progress"
+    }
   }
 }

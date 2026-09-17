@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { BASE_URL } from "@/lib/site";
 import { locales, localePath, type Locale } from "@/lib/i18n";
 import { getPosts } from "@/lib/posts";
+import { projectPageSlugs } from "@/content/project-pages";
 
 
 function alternates(path: string) {
@@ -20,6 +21,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
         url: `${BASE_URL}${localePath(locale, path)}`,
         alternates: alternates(path),
       });
+    }
+  }
+
+  for (const slug of projectPageSlugs) {
+    const path = `/projects/${slug}`;
+    for (const locale of locales) {
+      entries.push({ url: `${BASE_URL}${localePath(locale, path)}`, alternates: alternates(path) });
     }
   }
 

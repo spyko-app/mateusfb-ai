@@ -33,7 +33,8 @@
     "all": "Todos os projetos",
     "filterAll": "Todos",
     "filterShipped": "Entregues",
-    "filterBuilding": "Em construção"
+    "filterBuilding": "Em construção",
+    "view": "Ver projeto"
   },
   "where": {
     "num": "02",
@@ -121,5 +122,20 @@
     "title": "Não encontrado",
     "body": "Essa página não existe.",
     "home": "Ir pro início"
+  },
+  "project": {
+    "features": "Funcionalidades",
+    "featuresTitle": "O que ele faz",
+    "featuresBody": "As peças que fazem valer a pena abrir, direto do repositório.",
+    "getStarted": "Comece aqui",
+    "stepsTitle": "Do zero a rodando",
+    "stepsBody": "Quatro passos, copiados do README.",
+    "back": "Voltar aos projetos",
+    "demo": "Demonstração",
+    "openRepo": "Abrir no GitHub",
+    "status": {
+      "shipped": "Entregue",
+      "building": "Em andamento"
+    }
   }
 }

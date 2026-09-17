@@ -1,7 +1,8 @@
 import { DashedCard, Eyebrow, Reveal, ScrambleText } from "@/components/ds";
-import { getMessages, type Locale } from "@/lib/i18n";
+import Link from "next/link";
+import { getMessages, localePath, type Locale } from "@/lib/i18n";
 import { relativeTime, type RepoStats } from "@/lib/github";
-import { repoUrl, type Project } from "@/content/projects";
+import type { Project } from "@/content/projects";
 
 export function ProjectCard({
   project,
@@ -15,16 +16,16 @@ export function ProjectCard({
   index?: number;
 }) {
   const m = getMessages(locale);
-  const url = repoUrl(project);
+  // O card inteiro é um link INTERNO pra página do projeto; o "GitHub ↗" mora na página de detalhe (sem <a> aninhado).
+  const href = localePath(locale, `/projects/${project.slug}`);
   const building = project.status === "building";
-  const linkProps = url ? { as: "a" as const, href: url, target: "_blank", rel: "noreferrer", "data-scramble": "" } : {};
   return (
     <Reveal delay={index * 0.08}>
       <DashedCard
-        {...linkProps}
-        className={`flex h-full min-h-[260px] flex-col justify-between p-6 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fg/60 focus-visible:ring-offset-2 ${
-          url ? "cursor-pointer hover:bg-fg/[0.04] hover:border-fg/40" : ""
-        }`}
+        as={Link}
+        href={href}
+        data-scramble=""
+        className="flex h-full min-h-[260px] cursor-pointer flex-col justify-between p-6 transition-colors duration-200 hover:border-fg/40 hover:bg-fg/[0.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fg/60 focus-visible:ring-offset-2"
       >
         <div className="h-6 flex items-center justify-between gap-3">
           <Eyebrow>{stats.language ?? project.language}</Eyebrow>
@@ -42,14 +43,12 @@ export function ProjectCard({
           <span className="whitespace-nowrap">
             ★ {stats.stars} · {m.projects.updated} {relativeTime(stats.pushedAt, locale)}
           </span>
-          {url && (
-            <span className="whitespace-nowrap text-fg">
-              <ScrambleText text={m.projects.open} />{" "}
-              <span className="inline-block transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
-                ↗
-              </span>
+          <span className="whitespace-nowrap text-fg">
+            <ScrambleText text={m.projects.view} />{" "}
+            <span className="inline-block transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+              →
             </span>
-          )}
+          </span>
         </div>
       </DashedCard>
     </Reveal>

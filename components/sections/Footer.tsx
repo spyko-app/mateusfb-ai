@@ -2,7 +2,7 @@ import Link from "next/link";
 import { DashedCard, Eyebrow, ScrambleText } from "@/components/ds";
 import { ShufflingMark } from "@/components/brand";
 import { getMessages, localePath, type Locale } from "@/lib/i18n";
-import { projects, repoUrl, githubProfile, contactEmail } from "@/content/projects";
+import { projects, githubProfile, contactEmail } from "@/content/projects";
 import { LocaleSwitch } from "@/components/nav/LocaleSwitch";
 
 export const LICENSE_URL = "https://github.com/spyko-app/mateusfb-ai/blob/main/LICENSE";
@@ -38,10 +38,7 @@ export function Footer({ locale, pathname }: { locale: Locale; pathname?: string
   const cols: { title: string; items: Item[] }[] = [
     {
       title: m.footer.projects,
-      items: projects.map((pr) => {
-        const url = repoUrl(pr);
-        return url ? { label: pr.name, href: url, external: true } : { label: pr.name, href: p("/projects") };
-      }),
+      items: projects.map((pr) => ({ label: pr.name, href: p(`/projects/${pr.slug}`) })),
     },
     {
       title: m.footer.site,

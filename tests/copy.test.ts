@@ -9,6 +9,7 @@ const files = [
   "messages/en.json",
   "messages/pt.json",
   "content/projects.ts",
+  "content/project-pages.ts",
   ...fs
     .readdirSync(path.join(root, "content/posts"))
     .filter((f) => f.endsWith(".mdx"))
